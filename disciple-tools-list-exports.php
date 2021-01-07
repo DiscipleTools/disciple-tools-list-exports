@@ -4,7 +4,7 @@
  * Plugin URI: https://github.com/DiscipleTools/disciple-tools-list-exports
  * Description: Disciple Tools - List Export adds export list panel to contacts list page. (BCC Email, Phone, CSV, Map)
  * of the Disciple Tools system.
- * Version:  1.1
+ * Version:  1.2
  * Author URI: https://github.com/DiscipleTools
  * GitHub Plugin URI: https://gihub.com/DiscipleTools/disciple-tools-list-exports
  * Requires at least: 4.7.0
@@ -150,12 +150,9 @@ class DT_List_Exports {
         // Plugin directory paths.
         $this->includes_path      = trailingslashit( $this->dir_path . 'includes' );
 
-        // Plugin directory URIs.
-        $this->img_uri      = trailingslashit( $this->dir_uri . 'img' );
-
         // Admin and settings variables
         $this->token             = 'dt_list_exports';
-        $this->version             = '1.1';
+        $this->version             = '1.2';
 
     }
 
@@ -184,7 +181,7 @@ class DT_List_Exports {
         }
 
         // Internationalize the text strings used.
-        add_action( 'init', array( $this, 'i18n' ), 2 );
+        add_action( 'plugins_loaded', array( $this, 'i18n' ), 2 );
 
         if ( is_admin() ) {
             // adds links to the plugin description area in the plugin admin list.
@@ -252,7 +249,20 @@ class DT_List_Exports {
      * @return void
      */
     public function i18n() {
-        load_plugin_textdomain( 'dt_list_exports', false, trailingslashit( dirname( plugin_basename( __FILE__ ) ) ). 'languages' );
+        //Take from loadTextDomain() in /disciple-tools-theme/dt-core/libraries/plugin-update-checker/Puc/v4p5/UpdateChecker.php
+        $domain = 'dt_list_exports';
+        $locale = apply_filters(
+            'plugin_locale',
+            ( is_admin() && function_exists( 'get_user_locale' ) ) ? get_user_locale() : get_locale(),
+            $domain
+        );
+
+        $mo_file = $domain . '-' . $locale . '.mo';
+        $path = realpath( dirname( __FILE__ ) . '/languages' );
+
+        if ($path && file_exists( $path )) {
+            load_textdomain( $domain, $path . '/' . $mo_file );
+        }
     }
 
     /**
