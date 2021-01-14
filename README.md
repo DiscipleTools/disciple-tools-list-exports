@@ -11,4 +11,4 @@ your message app (iMessage, WhatsApp, Signal)
 
 ---
 
-![map](documentation/map.png)
+![tile](https://raw.githubusercontent.com/DiscipleTools/disciple-tools-list-exports/master/documentation/list-exports.png)
