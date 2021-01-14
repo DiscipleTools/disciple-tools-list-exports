@@ -34,7 +34,7 @@ function dt_list_exports_filters( $post_type ) {
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
-    <div id="export-reveal-map" class="full reveal" data-reveal>
+    <div id="export-reveal-map" class="full reveal" data-v-offset="0" data-reveal>
         <span class="section-header" id="export-title-map"></span> <span id="full-reveal-loading-spinner" style="display: inline-block" class="loading-spinner active"></span>
         <span class="section-header"> | Mapped Locations: <span id="mapped" class="loading-spinner active"></span> | Contacts Without Locations: <span id="unmapped" class="loading-spinner active"></span> </span>
         <div id="export-content-full">
