@@ -12,4 +12,6 @@ your message app (iMessage, WhatsApp, Signal)
 
 ---
 
+This tile is added to the left side of the Contacts list menu. Once you have created your list by using default or custom filters, you can select the type of export. 
+
 ![tile](https://raw.githubusercontent.com/DiscipleTools/disciple-tools-list-exports/master/documentation/list-exports.png)
