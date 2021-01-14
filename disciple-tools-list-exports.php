@@ -3,12 +3,12 @@
  * Plugin Name: Disciple Tools - List Exports
  * Plugin URI: https://github.com/DiscipleTools/disciple-tools-list-exports
  * Description: Disciple Tools - List Export adds export list panel to contacts list page. (BCC Email, Phone, CSV, Map)
- * Version:  1.2
+ * Version:  1.3
  * Author URI: https://github.com/DiscipleTools
  * GitHub Plugin URI: https://gihub.com/DiscipleTools/disciple-tools-list-exports
  * Requires at least: 4.7.0
  * (Requires 4.7+ because of the integration of the REST API at 4.7 and the security requirements of this milestone version.)
- * Tested up to: 5.4
+ * Tested up to: 5.6
  *
  * @package Disciple_Tools
  * @link    https://github.com/DiscipleTools
@@ -151,7 +151,7 @@ class DT_List_Exports {
 
         // Admin and settings variables
         $this->token             = 'dt_list_exports';
-        $this->version             = '1.2';
+        $this->version             = '1.3';
 
     }
 
