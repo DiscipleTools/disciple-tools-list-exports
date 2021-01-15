@@ -5,7 +5,7 @@ function dt_list_exports_filters( $post_type ) {
     if ( 'contacts' === $post_type ) :
         ?>
     <div class="bordered-box collapsed">
-        <div class="section-header"><?php esc_html_e( 'List Exports', 'disciple_tools' )?>&nbsp;
+        <div class="section-header"><?php esc_html_e( 'List Exports', 'disciple-tools-list-exports' )?>&nbsp;
              <button class="float-right" data-open="export-help-text">
                 <img class="help-icon" src="<?php echo esc_html( get_template_directory_uri() . '/dt-assets/images/help.svg' ) ?>" alt="help"/>
             </button>
@@ -17,11 +17,11 @@ function dt_list_exports_filters( $post_type ) {
             </button>
         </div>
         <div class="section-body" style="padding-top:1em;">
-            <a id="bcc-email-list">bcc email list</a><br>
-            <a id="phone-list">phone number list</a><br>
-            <a id="csv-list">csv list</a><br>
+            <a id="bcc-email-list"><?php esc_html_e( "bcc email list", 'disciple-tools-list-exports' ) ?></a><br>
+            <a id="phone-list"><?php esc_html_e( "phone number list", 'disciple-tools-list-exports' ) ?></a><br>
+            <a id="csv-list"><?php esc_html_e( "csv list", 'disciple-tools-list-exports' ) ?></a><br>
             <?php if ( class_exists( 'DT_Mapbox_API' ) && DT_Mapbox_API::get_key() ) : ?>
-            <a id="map-list">map list</a><br>
+                <a id="map-list"><?php esc_html_e( "map list", 'disciple-tools-list-exports' ) ?></a><br>
             <?php endif; ?>
         </div>
 
@@ -36,7 +36,7 @@ function dt_list_exports_filters( $post_type ) {
     </div>
     <div id="export-reveal-map" class="full reveal" data-v-offset="0" data-reveal>
         <span class="section-header" id="export-title-map"></span> <span id="full-reveal-loading-spinner" style="display: inline-block" class="loading-spinner active"></span>
-        <span class="section-header"> | Mapped Locations: <span id="mapped" class="loading-spinner active"></span> | Contacts Without Locations: <span id="unmapped" class="loading-spinner active"></span> </span>
+        <span class="section-header"> | <?php esc_html_e( "Mapped Locations", 'disciple-tools-list-exports' ) ?>: <span id="mapped" class="loading-spinner active"></span> | <?php esc_html_e( "Contacts Without Locations", 'disciple-tools-list-exports' ) ?>: <span id="unmapped" class="loading-spinner active"></span> </span>
         <div id="export-content-full">
             <div id="dynamic-styles"></div>
             <div id="map-wrapper">
@@ -48,7 +48,7 @@ function dt_list_exports_filters( $post_type ) {
         </button>
     </div>
     <div id="export-help-text" class="large reveal" data-reveal data-v-offset="10px">
-        <span class="section-header">List Export Help</span>
+        <span class="section-header"><?php esc_html_e( "List Export Help", 'disciple-tools-list-exports' ) ?></span>
         <hr>
         <div class="grid-x">
             <div class="cell">
