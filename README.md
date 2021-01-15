@@ -40,11 +40,16 @@ Installs as a standard plugin in the WP Admin area of the Disciple Tools system.
 
 ## Contribution
 
+Contributions welcome. You can report issues and bugs in the
+[Issues](https://github.com/DiscipleTools/disciple-tools-list-exports/issues) section of the repo. You can present ideas
+in the [Discussions](https://github.com/DiscipleTools/disciple-tools-list-exports/discussions) section of the repo. And
+code contributions are welcome using the [Pull Request](https://github.com/DiscipleTools/disciple-tools-list-exports/pulls)
+system for git. For a more details on contribution see the [contribution guidelines](https://github.com/DiscipleTools/disciple-tools-list-exports/blob/master/CONTRIBUTING.md).
 
 
 ## Screenshots
 
-#### Example of the Tile
+#### Example of the Contact List Tile
 
 This tile is added to the left side of the Contacts list menu. Once you have created your list by using default or custom filters, you can select the type of export.
 
@@ -93,4 +98,3 @@ If the number of contacts is over 100, then the points on the map must be hovere
 
 
 ![map](https://raw.githubusercontent.com/DiscipleTools/disciple-tools-list-exports/master/documentation/map.png)
-
