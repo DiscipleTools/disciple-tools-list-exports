@@ -30,7 +30,7 @@ information in a way that can be copied and taken to other applications.
 
 ## Installing
 
-Installs as a standard plugin in the WP Admin area of the Disciple Tools system. Requires the role of Administrator.
+Install as a standard plugin in the WP Admin area of the Disciple Tools system. Requires the role of Administrator.
 
 ## Requirements
 
