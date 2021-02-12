@@ -180,7 +180,7 @@ class DT_List_Exports {
         }
 
         // Internationalize the text strings used.
-        add_action( 'plugins_loaded', array( $this, 'i18n' ), 2 );
+        $this->i18n();
 
         if ( is_admin() ) {
             // adds links to the plugin description area in the plugin admin list.
@@ -248,20 +248,7 @@ class DT_List_Exports {
      * @return void
      */
     public function i18n() {
-        //Take from loadTextDomain() in /disciple-tools-theme/dt-core/libraries/plugin-update-checker/Puc/v4p5/UpdateChecker.php
-        $domain = 'dt_list_exports';
-        $locale = apply_filters(
-            'plugin_locale',
-            ( is_admin() && function_exists( 'get_user_locale' ) ) ? get_user_locale() : get_locale(),
-            $domain
-        );
-
-        $mo_file = $domain . '-' . $locale . '.mo';
-        $path = realpath( dirname( __FILE__ ) . '/languages' );
-
-        if ($path && file_exists( $path )) {
-            load_textdomain( $domain, $path . '/' . $mo_file );
-        }
+        load_plugin_textdomain( 'disciple-tools-list-exports', false, trailingslashit( dirname( plugin_basename( __FILE__ ) ) ). 'languages' );
     }
 
     /**
