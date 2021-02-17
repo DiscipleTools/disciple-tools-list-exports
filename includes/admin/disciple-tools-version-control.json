@@ -8,7 +8,7 @@
     "changelog": ""
   },
   "last_updated": "2018-1-24",
-  "upgrade_notice": "Here's why you should upgrade...",
+  "upgrade_notice": "Upgrade to get the latest features.",
   "requires": "4.7",
   "tested": "5.4.2",
   "banners": {
