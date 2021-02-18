@@ -355,7 +355,7 @@ add_action( 'plugins_loaded', function (){
             }
         }
         if ( class_exists( 'Puc_v4_Factory' ) ){
-            $hosted_json = "https://disciple.tools/wp-content/themes/disciple-tools-public-site/version-control.php?id=4103f0a4e707b1c7bebbc42809ab0ace8dd3f56d844d7903bfe9f95a2ccc6972";
+            $hosted_json = "https://raw.githubusercontent.com/DiscipleTools/disciple-tools-list-exports/master/version-control.json";
             Puc_v4_Factory::buildUpdateChecker(
                 $hosted_json,
                 __FILE__,
