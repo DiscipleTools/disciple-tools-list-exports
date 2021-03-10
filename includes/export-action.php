@@ -149,7 +149,7 @@ function dt_list_exports_filters( $post_type ) {
                         }
                         let non_empty_values = v.contact_email.filter(val=>val.value)
                         non_empty_values.forEach(vv=>{
-                            email_totals[group].push(_.escape(vv.value))
+                            email_totals[group].push(window.lodash.escape(vv.value))
                             count++
                             list_count['full']++
                             has_email = true;
@@ -159,18 +159,18 @@ function dt_list_exports_filters( $post_type ) {
                             count = 0
                         }
                         if ( non_empty_values.length > 1 )
-                        contacts_with.append(`<a href="${_.escape(window.wpApiShare.site_url)}/contacts/${_.escape(v.ID)}">${_.escape(v.post_title)}</a><br>`)
+                        contacts_with.append(`<a href="${window.lodash.escape(window.wpApiShare.site_url)}/contacts/${window.lodash.escape(v.ID)}">${window.lodash.escape(v.post_title)}</a><br>`)
                         list_count['with']++
                     }
                     if ( !has_email ){
-                        contacts_without.append(`<a href="${_.escape(window.wpApiShare.site_url)}/contacts/${_.escape(v.ID)}">${_.escape(v.post_title)}</a><br>`)
+                        contacts_without.append(`<a href="${window.lodash.escape(window.wpApiShare.site_url)}/contacts/${window.lodash.escape(v.ID)}">${window.lodash.escape(v.post_title)}</a><br>`)
                         list_count['without']++
                     }
                 })
 
                 let list_print = jQuery('#email-list-print')
                 $.each(email_totals, function (index, values) {
-                    list_print.append(_.escape(values.join(', ')))
+                    list_print.append(window.lodash.escape(values.join(', ')))
                 })
 
                 // console.log(list_count)
@@ -205,7 +205,7 @@ function dt_list_exports_filters( $post_type ) {
                 $.each(email_links, function (index, values) {
                     index++
                     email_strings = []
-                    email_strings = _.escape(values.join(', '))
+                    email_strings = window.lodash.escape(values.join(', '))
                     email_strings.replace(/,/g, ', ')
 
                     grouping_table.append(`
@@ -295,7 +295,7 @@ function dt_list_exports_filters( $post_type ) {
                                 has_phone = true
                             })
                             if ( non_empty_values.length > 1 ){
-                                contacts_with.append(`<a  href="${_.escape(window.wpApiShare.site_url)}/contacts/${_.escape(v.ID)}">${_.escape(v.post_title)}</a><br>`)
+                                contacts_with.append(`<a  href="${window.lodash.escape(window.wpApiShare.site_url)}/contacts/${window.lodash.escape(v.ID)}">${window.lodash.escape(v.post_title)}</a><br>`)
                                 list_count['with']++
                             }
                             if (phone_list.length > 50) {
@@ -303,7 +303,7 @@ function dt_list_exports_filters( $post_type ) {
                             }
                         }
                         if ( !has_phone ) {
-                            contacts_without.append(`<a  href="${_.escape(window.wpApiShare.site_url)}/contacts/${_.escape(v.ID)}">${_.escape(v.post_title)}</a><br>`)
+                            contacts_without.append(`<a  href="${window.lodash.escape(window.wpApiShare.site_url)}/contacts/${window.lodash.escape(v.ID)}">${window.lodash.escape(v.post_title)}</a><br>`)
                             list_count['without']++
                         }
                     })
@@ -313,7 +313,7 @@ function dt_list_exports_filters( $post_type ) {
                     $.each(phone_list, function (index, values) {
                         all_numbers = all_numbers.concat(values)
                     })
-                    list_print.append(_.escape(all_numbers.join(', ')))
+                    list_print.append(window.lodash.escape(all_numbers.join(', ')))
 
                     // console.log(list_count)
                     jQuery('#list-count-with').html(list_count['with'])
@@ -612,7 +612,7 @@ function dt_list_exports_filters( $post_type ) {
                     })
                     getContactsPromise.done((data)=>{
                         if (offset){
-                            items = _.unionBy(items, data.posts || [], "ID")
+                            items = window.lodash.unionBy(items, data.posts || [], "ID")
                         } else  {
                             items = data.posts || []
                         }
@@ -629,7 +629,7 @@ function dt_list_exports_filters( $post_type ) {
                             return true;
                         }
                     }).catch(err => {
-                        if ( _.get( err, "statusText" ) !== "abort" ) {
+                        if ( window.lodash.get( err, "statusText" ) !== "abort" ) {
                             console.error(err)
                             complete++
                             if ( required === complete ) {
