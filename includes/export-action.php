@@ -142,33 +142,35 @@ function dt_list_exports_filters( $post_type ) {
                 let contacts_without = jQuery('#contacts-without')
 
                 $.each(window.export_list, function (i, v) {
-                    if (typeof v.contact_email !== 'undefined' && v.contact_email !== '') {
+                    let has_email = false
+                    if (typeof v.contact_email !== "undefined" && v.contact_email !== '') {
                         if (typeof email_totals[group] === "undefined") {
-                            email_totals[group] = ''
+                            email_totals[group] = []
                         }
-                        $.each(v.contact_email, function (ii, vv) {
-                            email_totals[group] += vv.value + ', '
+                        let non_empty_values = v.contact_email.filter(val=>val.value)
+                        non_empty_values.forEach(vv=>{
+                            email_totals[group].push(_.escape(vv.value))
                             count++
                             list_count['full']++
+                            has_email = true;
                         })
-                        if (typeof v.contact_email[1] !== "undefined") {
-                            contacts_with.append(`<a href="/contacts/${v.ID}">${_.escape(v.post_title)}</a><br>`)
-                            list_count['with']++
-                        }
                         if (count > 50) {
                             group++
                             count = 0
                         }
-                    } else {
-                        contacts_without.append(`<a href="/contacts/${v.ID}">${_.escape(v.post_title)}</a><br>`)
+                        if ( non_empty_values.length > 1 )
+                        contacts_with.append(`<a href="${_.escape(window.wpApiShare.site_url)}/contacts/${_.escape(v.ID)}">${_.escape(v.post_title)}</a><br>`)
+                        list_count['with']++
+                    }
+                    if ( !has_email ){
+                        contacts_without.append(`<a href="${_.escape(window.wpApiShare.site_url)}/contacts/${_.escape(v.ID)}">${_.escape(v.post_title)}</a><br>`)
                         list_count['without']++
                     }
                 })
 
                 let list_print = jQuery('#email-list-print')
-                $.each(email_totals, function (index, string) {
-                    list_print.append(_.escape(string))
-                    index++
+                $.each(email_totals, function (index, values) {
+                    list_print.append(_.escape(values.join(', ')))
                 })
 
                 // console.log(list_count)
@@ -180,20 +182,19 @@ function dt_list_exports_filters( $post_type ) {
             }
             function generate_email_links() {
                 let email_links = []
-                let count = 0
                 let group = 0
                 $.each(window.export_list, function (i, v) {
-                    if (typeof v.contact_email !== 'undefined' && v.contact_email !== '') {
+                    if (typeof v.contact_email !== "undefined" && v.contact_email !== '') {
                         if (typeof email_links[group] === "undefined") {
-                            email_links[group] = ''
+                            email_links[group] = []
                         }
                         $.each(v.contact_email, function (ii, vv) {
-                            email_links[group] += vv.value + ','
-                            count++
+                            if ( vv.value ){
+                                email_links[group].push( vv.value )
+                            }
                         })
-                        if (count > 50) {
+                        if (email_links[group].length > 50) {
                             group++
-                            count = 0
                         }
                     }
                 })
@@ -201,21 +202,21 @@ function dt_list_exports_filters( $post_type ) {
                 // loop 50 each
                 let grouping_table = $('#grouping-table')
                 let email_strings = []
-                $.each(email_links, function (index, string) {
+                $.each(email_links, function (index, values) {
                     index++
-
                     email_strings = []
-                    email_strings = string
+                    email_strings = _.escape(values.join(', '))
                     email_strings.replace(/,/g, ', ')
 
                     grouping_table.append(`
-                    <tr><td style="vertical-align:top; width:50%;"><a href="mailto:?subject=group${index}&bcc=${string}" id="group-link-${index}" class="button expanded export-link-button">Open Email for Group ${index}</a></td><td><a onclick="jQuery('#group-addresses-${index}').toggle()">show group addresses</a> <span style="display:none;overflow-wrap: break-word;" id="group-addresses-${index}">${string.replace(/,/g, ', ')}</span></td></tr>
+                    <tr><td style="vertical-align:top; width:50%;"><a href="mailto:?subject=group${index}&bcc=${email_strings}" id="group-link-${index}" class="button expanded export-link-button">Open Email for Group ${index}</a></td>
+                    <td><a onclick="jQuery('#group-addresses-${index}').toggle()">show group addresses</a> <p style="display:none;overflow-wrap: break-word;" id="group-addresses-${index}">${email_strings.replace(/,/g, ', ')}</p></td></tr>
                     `)
 
                 })
                 grouping_table.append(`
                     <tr><td style="vertical-align:top; text-align:center; width:50%;"><a class="button expanded export-link-button" id="open_all">Open All</a></td><td></td></tr>
-                    `)
+                `)
 
                 $('.export-link-button').on('click',function(){
                     $(this).addClass('warning');
@@ -277,40 +278,42 @@ function dt_list_exports_filters( $post_type ) {
                         without: 0,
                         full: 0
                     }
-                    let count = 0
                     let group = 0
                     let contacts_with = jQuery('#contacts-with')
                     let contacts_without = jQuery('#contacts-without')
 
                     $.each(window.export_list, function (i, v) {
+                        let has_phone = false
                         if (typeof v.contact_phone !== 'undefined' && v.contact_phone !== '') {
-                            if (typeof phone_list[group] === "undefined") {
-                                phone_list[group] = ''
+                            if (typeof phone_list[group]==="undefined") {
+                                phone_list[group] = []
                             }
-                            $.each(v.contact_phone, function (ii, vv) {
-                                phone_list[group] += vv.value + ', '
-                                count++
+                            let non_empty_values = v.contact_phone.filter(val=>val.value)
+                            non_empty_values.forEach(vv=>{
+                                phone_list[group].push(vv.value)
                                 list_count['full']++
+                                has_phone = true
                             })
-                            if (typeof v.contact_phone[1] !== "undefined") {
-                                contacts_with.append(`<a href="/contacts/${v.ID}">${_.escape(v.post_title)}</a><br>`)
+                            if ( non_empty_values.length > 1 ){
+                                contacts_with.append(`<a  href="${_.escape(window.wpApiShare.site_url)}/contacts/${_.escape(v.ID)}">${_.escape(v.post_title)}</a><br>`)
                                 list_count['with']++
                             }
-                            if (count > 50) {
+                            if (phone_list.length > 50) {
                                 group++
-                                count = 0
                             }
-                        } else {
-                            contacts_without.append(`<a href="/contacts/${v.ID}">${_.escape(v.post_title)}</a><br>`)
+                        }
+                        if ( !has_phone ) {
+                            contacts_without.append(`<a  href="${_.escape(window.wpApiShare.site_url)}/contacts/${_.escape(v.ID)}">${_.escape(v.post_title)}</a><br>`)
                             list_count['without']++
                         }
                     })
 
                     let list_print = jQuery('#email-list-print')
-                    $.each(phone_list, function (index, string) {
-                        list_print.append(_.escape(string))
-                        index++
+                    let all_numbers = []
+                    $.each(phone_list, function (index, values) {
+                        all_numbers = all_numbers.concat(values)
                     })
+                    list_print.append(_.escape(all_numbers.join(', ')))
 
                     // console.log(list_count)
                     jQuery('#list-count-with').html(list_count['with'])
@@ -350,12 +353,12 @@ function dt_list_exports_filters( $post_type ) {
                         window.csv_export[i] = {}
                         window.csv_export[i]['title'] = v.post_title
 
-                        if (typeof v.contact_phone !== 'undefined' && v.contact_phone !== '') {
+                        if (typeof v.contact_phone !== "undefined" && v.contact_phone !== '') {
                             window.csv_export[i]['phone'] = v.contact_phone[0].value
                         } else {
                             window.csv_export[i]['phone'] = ''
                         }
-                        if (typeof v.contact_email !== 'undefined' && v.contact_email !== '') {
+                        if (typeof v.contact_email !== "undefined" && v.contact_email !== '') {
                             window.csv_export[i]['email'] = v.contact_email[0].value
                         } else {
                             window.csv_export[i]['email'] = ''
@@ -467,7 +470,7 @@ function dt_list_exports_filters( $post_type ) {
                             let mapped = 0
                             let unmapped = 0
                             $.each(window.export_list, function(i,v){
-                                if ( typeof v.location_grid_meta !== 'undefined') {
+                                if ( typeof v.location_grid_meta !== "undefined") {
                                     features.push({
                                         'type': 'Feature',
                                         'geometry': {
@@ -519,7 +522,7 @@ function dt_list_exports_filters( $post_type ) {
                                 }
                             });
 
-                            if ( window.records_list.total < 100 ) {
+                            if ( window.records_list.total < 5 ) {
                                 $.each(window.export_list, function(i,v){
                                     if ( typeof v.location_grid_meta !== 'undefined') {
                                         new mapboxgl.Popup()
@@ -583,88 +586,10 @@ function dt_list_exports_filters( $post_type ) {
 
                 let items = []
                 let getContactsPromise = null
-                let cachedFilter = window.SHAREDFUNCTIONS.get_json_cookie("last_view")
-                let closedSwitch = $(".show-closed-switch");
-                let showClosedCheckbox = $('#show_closed')
-                let currentFilter = window.current_filter
-                let customFilters = []
-                let checked = $(".js-list-view:checked")
-                let currentView = checked.val()
-                let filterId = checked.data("id") || currentView
-                let query = {}
-                let filter = {
-                    type:"default",
-                    ID:currentView,
-                    query:{},
-                    labels:[{ id:"all", name:window.list_settings.translations.filter_all, field: "assigned"}]
-                }
-                customFilters.push(JSON.parse(JSON.stringify(currentFilter)))
-                if ( currentView === "custom_filter"){
-                    let filterId = checked.data("id")
-                    if ( _.find(customFilters, {ID:filterId}) ){
-                        filter = _.find(customFilters, {ID:filterId})
-                    }
-                    filter.type = currentView
-                    query = filter.query
-                } else if ( currentView ) {
-                    filter = _.find(window.list_settings.filters.filters, {ID:filterId}) || _.find(window.list_settings.filters.filters, {ID:filterId.toString()}) || filter
-                    if ( filter ){
-                        filter.type = 'default'
-                        filter.labels =  filter.labels || [{ id:filterId, name:filter.name}]
-                        query = filter.query
-                    }
-                }
+                let filter = window.SHAREDFUNCTIONS.get_json_cookie("last_view")
 
-                if (currentView === "custom_filter" || currentView === "saved-filters" ){
-                    closedSwitch.show()
-                } else {
-                    closedSwitch.hide()
-                }
+                let data = filter.query || {}
 
-                filter.query = query
-                let sortField = _.get(currentFilter, "query.sort", "overall_status")
-                filter.query.sort = _.get(currentFilter, "query.sort", "overall_status");
-                if ( _.get( cachedFilter, "query.sort") ){
-                    filter.query.sort = cachedFilter.query.sort;
-                    sortField = _.get(cachedFilter, "query.sort", "overall_status")
-                }
-                currentFilter = JSON.parse(JSON.stringify(filter))
-
-                let data = currentFilter.query
-
-                if ( offset ){
-                    data.offset = offset
-                }
-                if ( sort ){
-                    data.sort = sort
-                    data.offset = 0
-                } else if (!data.sort) {
-                    data.sort = 'name';
-                    if ( window.wpApiShare.post_type === "contacts" ){
-                        data.sort = 'overall_status'
-                    } else if ( window.wpApiShare.post_type === "groups" ){
-                        data.sort = "group_type";
-                    }
-                }
-
-                currentFilter.query = data
-                document.cookie = `last_view=${JSON.stringify(currentFilter)}`
-
-                let showClosed = showClosedCheckbox.prop("checked")
-                if ( !showClosed && ( currentView === 'custom_filter' || currentView === 'saved-filters' ) ){
-                    if ( window.wpApiShare.post_type === "contacts" ){
-                        if ( !data.overall_status ){
-                            data.overall_status = [];
-                        }
-                        if ( !data.overall_status.includes("-closed") ){
-                            data.overall_status.push( "-closed" )
-                        }
-                    }
-                }
-                //abort previous promise if it is not finished.
-                if (getContactsPromise && _.get(getContactsPromise, "readyState") !== 4){
-                    getContactsPromise.abort()
-                }
                 let fields = [];
                 fields = [ 'location_grid_meta', 'contact_phone', 'contact_email' ]
                 data.fields_to_return = fields
@@ -691,7 +616,7 @@ function dt_list_exports_filters( $post_type ) {
                         } else  {
                             items = data.posts || []
                         }
-                        if (typeof window.export_list === 'undefined' ) {
+                        if (typeof window.export_list === "undefined" ) {
                             window.export_list = items
                         } else {
                             let arr = $.merge( [], window.export_list )
