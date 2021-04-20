@@ -21,7 +21,6 @@ function dt_list_exports_filters( $post_type ) {
             <a id="bcc-email-list"><?php esc_html_e( "bcc email list", 'disciple-tools-list-exports' ) ?></a><br>
             <a id="phone-list"><?php esc_html_e( "phone number list", 'disciple-tools-list-exports' ) ?></a><br>
             <a id="csv-list"><?php esc_html_e( "csv list", 'disciple-tools-list-exports' ) ?></a><br>
-            <a id="csv-list-custom-filters"><?php esc_html_e( "custom filters csv list", 'disciple-tools-list-exports' ) ?></a><br>
             <?php if ( class_exists( 'DT_Mapbox_API' ) && DT_Mapbox_API::get_key() ) : ?>
                 <a id="map-list"><?php esc_html_e( "map list", 'disciple-tools-list-exports' ) ?></a><br>
             <?php endif; ?>
@@ -327,53 +326,53 @@ function dt_list_exports_filters( $post_type ) {
             })
 
             /* CSV LIST CUSTOM FILTERS EXPORT ***********************/
-            let csv_list_custom_filters = $('#csv-list-custom-filters');
+            let csv_list = $('#csv-list');
 
-            csv_list_custom_filters.on('click', function() {
+            csv_list.on('click', function() {
                 clear_vars();
                 show_spinner();
-                $('#export-title').html('CSV Custom Filters List');
+                $('#export-title').html('CSV List');
                 $('#export-reveal').foundation('open');
-                csv_custom_fields_export();
+                csv_export();
             });
 
-            function csv_custom_fields_export() {
+            function csv_export() {
                 let rows = $('.dnd-moved');
                 let columns = rows[0].outerText.split('\t');
                     columns = columns.splice( 1, columns.length);
 
-                window.csv_custom_fields_export = [];
+                window.csv_export = [];
 
                 $.each( rows.splice( 1, rows.length) , function( i, v ) {
-                    window.csv_custom_fields_export[i] = {};
+                    window.csv_export[i] = {};
                     v = v.outerText.replace( /\n/g, '').split( '\t' );
                     v = v.splice( 1, v.length );
-                    window.csv_custom_fields_export[i] = v;
+                    window.csv_export[i] = v;
                 });
 
-                window.csv_custom_fields_export.unshift(columns);
+                window.csv_export.unshift(columns);
 
                     $('#export-content').append(`
                         <div class="grid-x">
-                                <div class="cell"><button class="button" type="button" id="download_csv_list_custom_file">Download CSV File</button></div>
+                                <div class="cell"><button class="button" type="button" id="download_csv_file">Download CSV File</button></div>
                                 <div class="cell">
-                                   <a onclick="jQuery('#csv-list_custom-filters-output').toggle()">show list</a><br><br>
-                                   <code id="csv-list_custom-filters-output" style="display:none"></code>
+                                   <a onclick="jQuery('#csv-output').toggle()">show list</a><br><br>
+                                   <code id="csv-output" style="display:none"></code>
                                 </div>
                                 <div class="cell"><br></div>
                             </div>
                         `);
 
-                    let csv_list_custom_filters_output = $('#csv-list_custom-filters-output');
-                    $.each( window.csv_custom_fields_export, function( i, v ) {
-                        csv_list_custom_filters_output.append( document.createTextNode( $.map( v, function(e) {
+                    let csv_output = $('#csv-output');
+                    $.each( window.csv_export, function( i, v ) {
+                        csv_output.append( document.createTextNode( $.map( v, function(e) {
                             return e;
                         }).join(',') ) );
-                        csv_list_custom_filters_output.append(`<br>`);
+                        csv_output.append(`<br>`);
                     })
 
-                    $('#download_csv_list_custom_file').on('click', function(){
-                        DownloadJSON2CSV(window.csv_custom_fields_export);
+                    $('#download_csv_file').on('click', function(){
+                        DownloadJSON2CSV(window.csv_export);
                     })
 
                 hide_spinner();
@@ -397,79 +396,6 @@ function dt_list_exports_filters( $post_type ) {
                 }
                 window.open( "data:text/csv;charset=utf-8," + escape(str))
             }
-
-
-            /* CSV LIST EXPORT **************************************/
-            let csv_list = $('#csv-list')
-            csv_list.on('click', function(){
-                clear_vars()
-                show_spinner()
-                $('#export-title').html('CSV List')
-                $('#export-reveal').foundation('open')
-
-                // console.log('pre_export_contact')
-                let required = Math.ceil(window.records_list.total / 100)
-                let complete = 0
-                export_contacts( 0, 'name' )
-                $( document ).ajaxComplete(function( event, xhr, settings ) {
-                    complete++
-                    if ( required === complete ){
-                        // console.log('post_export_contact')
-                        csv_export()
-                    }
-                });
-
-                function csv_export() {
-                    window.csv_export = []
-
-                    $.each(window.export_list, function (i, v) {
-
-                        window.csv_export[i] = {}
-                        window.csv_export[i]['title'] = v.post_title
-
-                        if (typeof v.contact_phone !== "undefined" && v.contact_phone !== '') {
-                            window.csv_export[i]['phone'] = v.contact_phone[0].value
-                        } else {
-                            window.csv_export[i]['phone'] = ''
-                        }
-                        if (typeof v.contact_email !== "undefined" && v.contact_email !== '') {
-                            window.csv_export[i]['email'] = v.contact_email[0].value
-                        } else {
-                            window.csv_export[i]['email'] = ''
-                        }
-                    })
-
-                    let head_row = {title:"Title", phone:"Phone", email:"Email" }
-                    window.csv_export.unshift(head_row)
-
-                    $('#export-content').append(`
-                        <div class="grid-x">
-                                <div class="cell"><button class="button" type="button" id="download_csv_file">Download CSV File</button></div>
-                                <div class="cell">
-                                   <a onclick="jQuery('#csv-output').toggle()">show list</a><br><br>
-                                   <code id="csv-output" style="display:none"></code>
-                                </div>
-                                <div class="cell"><br></div>
-                            </div>
-                        `)
-
-                    let csv_output = $('#csv-output')
-                    $.each(window.csv_export, function(i,v){
-                        csv_output.append( document.createTextNode($.map(v, function(e){
-                            return e;
-                        }).join(',')))
-                        csv_output.append(`<br>`)
-                    })
-
-                    $('#download_csv_file').on('click', function(){
-                        DownloadJSON2CSV(window.csv_export);
-                    })
-
-                    hide_spinner()
-                }
-
-                
-            })
 
             /* MAP LIST EXPORT **************************************/
             if ( window.mapbox_key ) {
