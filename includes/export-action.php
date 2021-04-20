@@ -21,6 +21,7 @@ function dt_list_exports_filters( $post_type ) {
             <a id="bcc-email-list"><?php esc_html_e( "bcc email list", 'disciple-tools-list-exports' ) ?></a><br>
             <a id="phone-list"><?php esc_html_e( "phone number list", 'disciple-tools-list-exports' ) ?></a><br>
             <a id="csv-list"><?php esc_html_e( "csv list", 'disciple-tools-list-exports' ) ?></a><br>
+            <a id="csv-list-custom-filters"><?php esc_html_e( "custom filters csv list", 'disciple-tools-list-exports' ) ?></a><br>
             <?php if ( class_exists( 'DT_Mapbox_API' ) && DT_Mapbox_API::get_key() ) : ?>
                 <a id="map-list"><?php esc_html_e( "map list", 'disciple-tools-list-exports' ) ?></a><br>
             <?php endif; ?>
@@ -149,7 +150,7 @@ function dt_list_exports_filters( $post_type ) {
                         }
                         let non_empty_values = v.contact_email.filter(val=>val.value)
                         non_empty_values.forEach(vv=>{
-                            email_totals[group].push(window.lodash.escape(vv.value))
+                            email_totals[group].push(_.escape(vv.value))
                             count++
                             list_count['full']++
                             has_email = true;
@@ -159,18 +160,18 @@ function dt_list_exports_filters( $post_type ) {
                             count = 0
                         }
                         if ( non_empty_values.length > 1 )
-                        contacts_with.append(`<a href="${window.lodash.escape(window.wpApiShare.site_url)}/contacts/${window.lodash.escape(v.ID)}">${window.lodash.escape(v.post_title)}</a><br>`)
+                        contacts_with.append(`<a href="${_.escape(window.wpApiShare.site_url)}/contacts/${_.escape(v.ID)}">${_.escape(v.post_title)}</a><br>`)
                         list_count['with']++
                     }
                     if ( !has_email ){
-                        contacts_without.append(`<a href="${window.lodash.escape(window.wpApiShare.site_url)}/contacts/${window.lodash.escape(v.ID)}">${window.lodash.escape(v.post_title)}</a><br>`)
+                        contacts_without.append(`<a href="${_.escape(window.wpApiShare.site_url)}/contacts/${_.escape(v.ID)}">${_.escape(v.post_title)}</a><br>`)
                         list_count['without']++
                     }
                 })
 
                 let list_print = jQuery('#email-list-print')
                 $.each(email_totals, function (index, values) {
-                    list_print.append(window.lodash.escape(values.join(', ')))
+                    list_print.append(_.escape(values.join(', ')))
                 })
 
                 // console.log(list_count)
@@ -205,7 +206,7 @@ function dt_list_exports_filters( $post_type ) {
                 $.each(email_links, function (index, values) {
                     index++
                     email_strings = []
-                    email_strings = window.lodash.escape(values.join(', '))
+                    email_strings = _.escape(values.join(', '))
                     email_strings.replace(/,/g, ', ')
 
                     grouping_table.append(`
@@ -295,7 +296,7 @@ function dt_list_exports_filters( $post_type ) {
                                 has_phone = true
                             })
                             if ( non_empty_values.length > 1 ){
-                                contacts_with.append(`<a  href="${window.lodash.escape(window.wpApiShare.site_url)}/contacts/${window.lodash.escape(v.ID)}">${window.lodash.escape(v.post_title)}</a><br>`)
+                                contacts_with.append(`<a  href="${_.escape(window.wpApiShare.site_url)}/contacts/${_.escape(v.ID)}">${_.escape(v.post_title)}</a><br>`)
                                 list_count['with']++
                             }
                             if (phone_list.length > 50) {
@@ -303,7 +304,7 @@ function dt_list_exports_filters( $post_type ) {
                             }
                         }
                         if ( !has_phone ) {
-                            contacts_without.append(`<a  href="${window.lodash.escape(window.wpApiShare.site_url)}/contacts/${window.lodash.escape(v.ID)}">${window.lodash.escape(v.post_title)}</a><br>`)
+                            contacts_without.append(`<a  href="${_.escape(window.wpApiShare.site_url)}/contacts/${_.escape(v.ID)}">${_.escape(v.post_title)}</a><br>`)
                             list_count['without']++
                         }
                     })
@@ -313,7 +314,7 @@ function dt_list_exports_filters( $post_type ) {
                     $.each(phone_list, function (index, values) {
                         all_numbers = all_numbers.concat(values)
                     })
-                    list_print.append(window.lodash.escape(all_numbers.join(', ')))
+                    list_print.append(_.escape(all_numbers.join(', ')))
 
                     // console.log(list_count)
                     jQuery('#list-count-with').html(list_count['with'])
@@ -324,6 +325,79 @@ function dt_list_exports_filters( $post_type ) {
                 }
 
             })
+
+            /* CSV LIST CUSTOM FILTERS EXPORT ***********************/
+            let csv_list_custom_filters = $('#csv-list-custom-filters');
+
+            csv_list_custom_filters.on('click', function() {
+                clear_vars();
+                show_spinner();
+                $('#export-title').html('CSV Custom Filters List');
+                $('#export-reveal').foundation('open');
+                csv_custom_fields_export();
+            });
+
+            function csv_custom_fields_export() {
+                let rows = $('.dnd-moved');
+                let columns = rows[0].outerText.split('\t');
+                    columns = columns.splice( 1, columns.length);
+
+                window.csv_custom_fields_export = [];
+
+                $.each( rows.splice( 1, rows.length) , function( i, v ) {
+                    window.csv_custom_fields_export[i] = {};
+                    v = v.outerText.replace( /\n/g, '').split( '\t' );
+                    v = v.splice( 1, v.length );
+                    window.csv_custom_fields_export[i] = v;
+                });
+
+                window.csv_custom_fields_export.unshift(columns);
+
+                    $('#export-content').append(`
+                        <div class="grid-x">
+                                <div class="cell"><button class="button" type="button" id="download_csv_list_custom_file">Download CSV File</button></div>
+                                <div class="cell">
+                                   <a onclick="jQuery('#csv-list_custom-filters-output').toggle()">show list</a><br><br>
+                                   <code id="csv-list_custom-filters-output" style="display:none"></code>
+                                </div>
+                                <div class="cell"><br></div>
+                            </div>
+                        `);
+
+                    let csv_list_custom_filters_output = $('#csv-list_custom-filters-output');
+                    $.each( window.csv_custom_fields_export, function( i, v ) {
+                        csv_list_custom_filters_output.append( document.createTextNode( $.map( v, function(e) {
+                            return e;
+                        }).join(',') ) );
+                        csv_list_custom_filters_output.append(`<br>`);
+                    })
+
+                    $('#download_csv_list_custom_file').on('click', function(){
+                        DownloadJSON2CSV(window.csv_custom_fields_export);
+                    })
+
+                hide_spinner();
+            }
+
+            function DownloadJSON2CSV( objArray ) {
+                var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+
+                var str = '';
+
+                for (var i = 0; i < array.length; i++) {
+                    var line = '';
+
+                    for (var index in array[i]) {
+                        line += '"' + array[i][index] + '",';
+                    }
+
+                    line.slice(0,line.Length-1);
+
+                    str += line + '\r\n';
+                }
+                window.open( "data:text/csv;charset=utf-8," + escape(str))
+            }
+
 
             /* CSV LIST EXPORT **************************************/
             let csv_list = $('#csv-list')
@@ -394,25 +468,7 @@ function dt_list_exports_filters( $post_type ) {
                     hide_spinner()
                 }
 
-                function DownloadJSON2CSV(objArray)
-                {
-                    var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
-
-                    var str = '';
-
-                    for (var i = 0; i < array.length; i++) {
-                        var line = '';
-
-                        for (var index in array[i]) {
-                            line += '"' + array[i][index] + '",';
-                        }
-
-                        line.slice(0,line.Length-1);
-
-                        str += line + '\r\n';
-                    }
-                    window.open( "data:text/csv;charset=utf-8," + escape(str))
-                }
+                
             })
 
             /* MAP LIST EXPORT **************************************/
@@ -612,7 +668,7 @@ function dt_list_exports_filters( $post_type ) {
                     })
                     getContactsPromise.done((data)=>{
                         if (offset){
-                            items = window.lodash.unionBy(items, data.posts || [], "ID")
+                            items = _.unionBy(items, data.posts || [], "ID")
                         } else  {
                             items = data.posts || []
                         }
@@ -629,7 +685,7 @@ function dt_list_exports_filters( $post_type ) {
                             return true;
                         }
                     }).catch(err => {
-                        if ( window.lodash.get( err, "statusText" ) !== "abort" ) {
+                        if ( _.get( err, "statusText" ) !== "abort" ) {
                             console.error(err)
                             complete++
                             if ( required === complete ) {
