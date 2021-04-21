@@ -345,8 +345,19 @@ function dt_list_exports_filters( $post_type ) {
 
                 $.each( rows.splice( 1, rows.length) , function( i, v ) {
                     window.csv_export[i] = {};
-                    v = v.outerText.replace( /\n/g, '').split( '\t' );
+
+                    // Remove new line characters and convert to array
+                    v = v.outerText.replace( /\n/g, ',').split( '\t' );
+
+                    // Drop first element of array, which is empty
                     v = v.splice( 1, v.length );
+
+                    // Remove first and last character from each string, which is always a comma
+                    // and clean up string
+                    $.each( v, function( i2, v2 ) {
+                        v[i2] = v2.substring( 1, v2.length-1 ).replace( /,/g, ', ').replace( /\s{2}/g, ' ');
+                    });
+
                     window.csv_export[i] = v;
                 });
 
@@ -366,7 +377,7 @@ function dt_list_exports_filters( $post_type ) {
                     let csv_output = $('#csv-output');
                     $.each( window.csv_export, function( i, v ) {
                         csv_output.append( document.createTextNode( $.map( v, function(e) {
-                            return e;
+                            return '"' + e + '"';
                         }).join(',') ) );
                         csv_output.append(`<br>`);
                     })
