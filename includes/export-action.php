@@ -356,6 +356,9 @@ function dt_list_exports_filters( $post_type ) {
                     // and clean up string
                     $.each( v, function( i2, v2 ) {
                         v[i2] = v2.substring( 1, v2.length-1 ).replace( /,/g, ', ').replace( /\s{2}/g, ' ');
+                        if ( v[i2] === ', ' ) {
+                            v[i2] = '';
+                        }
                     });
 
                     window.csv_export[i] = v;
