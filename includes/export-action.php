@@ -350,7 +350,7 @@ function dt_list_exports_filters( $post_type ) {
                     window.csv_export[i] = {};
 
                     // Remove new line characters and convert to array
-                    v = v.outerText.replace( /\n/g, ',').split( '\t' );
+                    v = v.outerText.replace( /\n/g, ';').split( '\t' );
 
                     // Drop first element of array, which is empty
                     v = v.splice( 1, v.length );
@@ -358,8 +358,8 @@ function dt_list_exports_filters( $post_type ) {
                     // Remove first and last character from each string, which is always a comma
                     // and clean up string
                     $.each( v, function( i2, v2 ) {
-                        v[i2] = v2.substring( 1, v2.length-1 ).replace( /,/g, ', ').replace( /\s{2}/g, ' ');
-                        if ( v[i2] === ', ' ) {
+                        v[i2] = v2.substring( 1, v2.length-1 ).replace( /;/g, '; ').replace( /\s{2}/g, ' ');
+                        if ( v[i2] === '; ' ) {
                             v[i2] = '';
                         }
                     });
