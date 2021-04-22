@@ -327,13 +327,16 @@ function dt_list_exports_filters( $post_type ) {
 
             /* CSV LIST CUSTOM FILTERS EXPORT ***********************/
             let csv_list = $('#csv-list');
-
             csv_list.on('click', function() {
-                clear_vars();
-                show_spinner();
-                $('#export-title').html('CSV List');
-                $('#export-reveal').foundation('open');
-                csv_export();
+                if ( $('#list-loading-spinner').hasClass('active') ) {
+                    alert('Contact list is still loading, please try again in a few seconds.');
+                } else {
+                    clear_vars();
+                    show_spinner();
+                    $('#export-title').html('CSV List');
+                    $('#export-reveal').foundation('open');
+                    csv_export();
+                }
             });
 
             function csv_export() {
