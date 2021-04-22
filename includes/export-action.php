@@ -149,7 +149,7 @@ function dt_list_exports_filters( $post_type ) {
                         }
                         let non_empty_values = v.contact_email.filter(val=>val.value)
                         non_empty_values.forEach(vv=>{
-                            email_totals[group].push(_.escape(vv.value))
+                            email_totals[group].push(window.lodash.escape(vv.value))
                             count++
                             list_count['full']++
                             has_email = true;
@@ -411,7 +411,24 @@ function dt_list_exports_filters( $post_type ) {
 
                     str += line + '\r\n';
                 }
-                window.open( "data:text/csv;charset=utf-8," + escape(str))
+
+                let export_link = document.createElement('a');
+                
+                let d = new Date();
+
+                let month = d.getMonth() + 1;
+                month = ( month < 10 ? '0' : '' ) + month;
+
+                let day = d.getDate();
+                day = ( day < 10 ? '0' : '' ) + day;
+
+                let date = d.getFullYear() + '_' + month + '_' + day;
+
+                let export_filename = date + '_list_export.csv';
+                export_link.download = export_filename;
+                export_link.href = "data:text/csv;charset=utf-8," + escape(str);
+                export_link.click();
+                export_link.remove();
             }
 
             /* MAP LIST EXPORT **************************************/
