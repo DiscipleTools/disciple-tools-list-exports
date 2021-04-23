@@ -325,48 +325,49 @@ function dt_list_exports_filters( $post_type ) {
 
             })
 
-            /* CSV LIST EXPORT **************************************/
-            let csv_list = $('#csv-list')
-            csv_list.on('click', function(){
-                clear_vars()
-                show_spinner()
-                $('#export-title').html('CSV List')
-                $('#export-reveal').foundation('open')
+            /* CSV LIST CUSTOM FILTERS EXPORT ***********************/
+            let csv_list = $('#csv-list');
+            csv_list.on('click', function() {
+                if ( $('#list-loading-spinner').hasClass('active') ) {
+                    alert('Contact list is still loading, please try again in a few seconds.');
+                } else {
+                    clear_vars();
+                    show_spinner();
+                    $('#export-title').html('CSV List');
+                    $('#export-reveal').foundation('open');
+                    csv_export();
+                }
+            });
 
-                // console.log('pre_export_contact')
-                let required = Math.ceil(window.records_list.total / 100)
-                let complete = 0
-                export_contacts( 0, 'name' )
-                $( document ).ajaxComplete(function( event, xhr, settings ) {
-                    complete++
-                    if ( required === complete ){
-                        // console.log('post_export_contact')
-                        csv_export()
-                    }
+            function csv_export() {
+                let rows = $('.dnd-moved');
+                let columns = rows[0].outerText.split('\t');
+                    columns = columns.splice( 1, columns.length);
+
+                window.csv_export = [];
+
+                $.each( rows.splice( 1, rows.length) , function( i, v ) {
+                    window.csv_export[i] = {};
+
+                    // Remove new line characters and convert to array
+                    v = v.outerText.replace( /\n/g, ';').split( '\t' );
+
+                    // Drop first element of array, which is empty
+                    v = v.splice( 1, v.length );
+
+                    // Remove first and last character from each string, which is always a comma
+                    // and clean up string
+                    $.each( v, function( i2, v2 ) {
+                        v[i2] = v2.substring( 1, v2.length-1 ).replace( /;/g, '; ').replace( /\s{2}/g, ' ');
+                        if ( v[i2] === '; ' ) {
+                            v[i2] = '';
+                        }
+                    });
+
+                    window.csv_export[i] = v;
                 });
 
-                function csv_export() {
-                    window.csv_export = []
-
-                    $.each(window.export_list, function (i, v) {
-
-                        window.csv_export[i] = {}
-                        window.csv_export[i]['title'] = v.post_title
-
-                        if (typeof v.contact_phone !== "undefined" && v.contact_phone !== '') {
-                            window.csv_export[i]['phone'] = v.contact_phone[0].value
-                        } else {
-                            window.csv_export[i]['phone'] = ''
-                        }
-                        if (typeof v.contact_email !== "undefined" && v.contact_email !== '') {
-                            window.csv_export[i]['email'] = v.contact_email[0].value
-                        } else {
-                            window.csv_export[i]['email'] = ''
-                        }
-                    })
-
-                    let head_row = {title:"Title", phone:"Phone", email:"Email" }
-                    window.csv_export.unshift(head_row)
+                window.csv_export.unshift(columns);
 
                     $('#export-content').append(`
                         <div class="grid-x">
@@ -377,43 +378,58 @@ function dt_list_exports_filters( $post_type ) {
                                 </div>
                                 <div class="cell"><br></div>
                             </div>
-                        `)
+                        `);
 
-                    let csv_output = $('#csv-output')
-                    $.each(window.csv_export, function(i,v){
-                        csv_output.append( document.createTextNode($.map(v, function(e){
-                            return e;
-                        }).join(',')))
-                        csv_output.append(`<br>`)
+                    let csv_output = $('#csv-output');
+                    $.each( window.csv_export, function( i, v ) {
+                        csv_output.append( document.createTextNode( $.map( v, function(e) {
+                            return '"' + e + '"';
+                        }).join(',') ) );
+                        csv_output.append(`<br>`);
                     })
 
                     $('#download_csv_file').on('click', function(){
                         DownloadJSON2CSV(window.csv_export);
                     })
 
-                    hide_spinner()
-                }
+                hide_spinner();
+            }
 
-                function DownloadJSON2CSV(objArray)
-                {
-                    var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+            function DownloadJSON2CSV( objArray ) {
+                var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
 
-                    var str = '';
+                var str = '';
 
-                    for (var i = 0; i < array.length; i++) {
-                        var line = '';
+                for (var i = 0; i < array.length; i++) {
+                    var line = '';
 
-                        for (var index in array[i]) {
-                            line += '"' + array[i][index] + '",';
-                        }
-
-                        line.slice(0,line.Length-1);
-
-                        str += line + '\r\n';
+                    for (var index in array[i]) {
+                        line += '"' + array[i][index] + '",';
                     }
-                    window.open( "data:text/csv;charset=utf-8," + escape(str))
+
+                    line.slice(0,line.Length-1);
+
+                    str += line + '\r\n';
                 }
-            })
+
+                let export_link = document.createElement('a');
+                
+                let d = new Date();
+
+                let month = d.getMonth() + 1;
+                month = ( month < 10 ? '0' : '' ) + month;
+
+                let day = d.getDate();
+                day = ( day < 10 ? '0' : '' ) + day;
+
+                let date = d.getFullYear() + '_' + month + '_' + day;
+
+                let export_filename = date + '_list_export.csv';
+                export_link.download = export_filename;
+                export_link.href = "data:text/csv;charset=utf-8," + escape(str);
+                export_link.click();
+                export_link.remove();
+            }
 
             /* MAP LIST EXPORT **************************************/
             if ( window.mapbox_key ) {
