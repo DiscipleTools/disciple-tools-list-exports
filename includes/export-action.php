@@ -23,9 +23,9 @@ function dt_list_exports_filters( $post_type ) {
             ?>
             <a id="bcc-email-list"><?php esc_html_e( "bcc email list", 'disciple-tools-list-exports' ) ?></a><br>
             <a id="phone-list"><?php esc_html_e( "phone number list", 'disciple-tools-list-exports' ) ?></a><br>
-                <?php if (  class_exists( 'DT_Mapbox_API' ) && DT_Mapbox_API::get_key() ) : ?>
-                    <a id="map-list"><?php esc_html_e( "map list", 'disciple-tools-list-exports' ) ?></a><br>
-                <?php endif; ?>
+            <?php endif; ?>
+            <?php if (  class_exists( 'DT_Mapbox_API' ) && DT_Mapbox_API::get_key() ) : ?>
+                <a id="map-list"><?php esc_html_e( "map list", 'disciple-tools-list-exports' ) ?></a><br>
             <?php endif; ?>
         </div>
 
