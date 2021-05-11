@@ -358,7 +358,7 @@ function dt_list_exports_filters( $post_type ) {
                     // Remove first and last character from each string, which is always a comma
                     // and clean up string
                     $.each( v, function( i2, v2 ) {
-                        v[i2] = v2.substring( 1, v2.length-1 ).replace( /;/g, '; ').replace( /\s{2}/g, ' ');
+                        v[i2] = v2.substring( 1, v2.length ).replace( /;/g, '; ').replace( /\s{2}/g, ' ');
                         if ( v[i2] === '; ' ) {
                             v[i2] = '';
                         }
@@ -371,6 +371,15 @@ function dt_list_exports_filters( $post_type ) {
 
                     $('#export-content').append(`
                         <div class="grid-x">
+                                <div class="cell" style="margin-bottom:15px;">The following fields will be exported:</div>
+                                <div class="cell">`);
+
+                    columns.forEach( function( i ) {
+                        $('#export-content').append(`<code>` + i + `</code> `);
+                    });
+
+                    $('#export-content').append(`</div>
+                                <hr>
                                 <div class="cell"><button class="button" type="button" id="download_csv_file">Download CSV File</button></div>
                                 <div class="cell">
                                    <a onclick="jQuery('#csv-output').toggle()">show list</a><br><br>
