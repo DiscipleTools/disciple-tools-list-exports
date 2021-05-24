@@ -2,7 +2,7 @@
 
 add_action( 'dt_post_list_filters_sidebar', 'dt_list_exports_filters', 10, 1 );
 function dt_list_exports_filters( $post_type ) {
-        ?>
+    ?>
     <br>
     <div class="bordered-box collapsed">
         <div class="section-header"><?php esc_html_e( 'List Exports', 'disciple-tools-list-exports' )?>&nbsp;
@@ -18,13 +18,13 @@ function dt_list_exports_filters( $post_type ) {
         </div>
         <div class="section-body" style="padding-top:1em;">
             <a id="csv-list"><?php esc_html_e( "csv list", 'disciple-tools-list-exports' ) ?></a><br>
-            <?php 
-                if ( $post_type === 'contacts' ):
-            ?>
+            <?php
+            if ( $post_type === 'contacts' ):
+                ?>
             <a id="bcc-email-list"><?php esc_html_e( "bcc email list", 'disciple-tools-list-exports' ) ?></a><br>
             <a id="phone-list"><?php esc_html_e( "phone number list", 'disciple-tools-list-exports' ) ?></a><br>
             <?php endif; ?>
-            <?php if (  class_exists( 'DT_Mapbox_API' ) && DT_Mapbox_API::get_key() ) : ?>
+            <?php if ( class_exists( 'DT_Mapbox_API' ) && DT_Mapbox_API::get_key() ) : ?>
                 <a id="map-list"><?php esc_html_e( "map list", 'disciple-tools-list-exports' ) ?></a><br>
             <?php endif; ?>
         </div>
