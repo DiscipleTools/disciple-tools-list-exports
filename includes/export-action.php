@@ -344,7 +344,6 @@ function dt_list_exports_filters( $post_type ) {
 
             function csv_export() {
                 let columns = $('#records-table tr')[0].innerText.split('\t');
-                let columns = $('')
                     columns = columns.splice( 1, columns.length);
 
                 let rows = $('#table-content > tr');
@@ -362,7 +361,7 @@ function dt_list_exports_filters( $post_type ) {
                     })
                     clean_row.shift(); //removes first element which is a number
                     $.each( clean_row, function(i,v) {
-                        clean_row[i] = v.replace( /\s+$/g, '' ); //remove trailing space
+                        clean_row[i] = v.replace( /^\s+/g, '').replace( /\s+$/g, '' ); //trim cell contents
                     });
                     window.csv_export[i] = clean_row;
                 });
