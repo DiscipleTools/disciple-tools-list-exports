@@ -344,6 +344,7 @@ function dt_list_exports_filters( $post_type ) {
 
             function csv_export() {
                 let columns = $('#records-table tr')[0].innerText.split('\t');
+                let columns = $('')
                     columns = columns.splice( 1, columns.length);
 
                 let rows = $('#table-content > tr');
@@ -421,7 +422,6 @@ function dt_list_exports_filters( $post_type ) {
 
                     str += line + '\r\n';
                 }
-                    console.log(str)
 
                 let export_link = document.createElement('a');
                 
