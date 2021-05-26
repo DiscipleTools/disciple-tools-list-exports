@@ -394,7 +394,7 @@ function dt_list_exports_filters( $post_type ) {
                     $.each( window.csv_export, function( i, v ) {
                         csv_output.append( document.createTextNode( $.map( v, function(e) {
                             return '"' + e + '"';
-                        }).join(';') ) );
+                        }).join(',') ) );
                         csv_output.append(`<br>`);
                     })
 
@@ -414,7 +414,7 @@ function dt_list_exports_filters( $post_type ) {
                     var line = '';
 
                     for (var index in array[i]) {
-                        line += '"' + array[i][index] + '";';
+                        line += '"' + array[i][index] + '",';
                     }
 
                     line.slice(0,line.length-1);
