@@ -343,32 +343,29 @@ function dt_list_exports_filters( $post_type ) {
             });
 
             function csv_export() {
-                let rows = $('.dnd-moved');
-                let columns = rows[0].outerText.split('\t');
+                let columns = $('#records-table tr')[0].innerText.split('\t');
                     columns = columns.splice( 1, columns.length);
+
+                let rows = $('#table-content > tr');
 
                 window.csv_export = [];
 
-                $.each( rows.splice( 1, rows.length) , function( i, v ) {
-                    window.csv_export[i] = {};
-
-                    // Remove new line characters and convert to array
-                    v = v.outerText.replace( /\n/g, ';').split( '\t' );
-
-                    // Drop first element of array, which is empty
-                    v = v.splice( 1, v.length );
-
-                    // Remove first and last character from each string, which is always a comma
-                    // and clean up string
-                    $.each( v, function( i2, v2 ) {
-                        v[i2] = v2.substring( 1, v2.length ).replace( /;/g, '; ').replace( /\s{2}/g, ' ');
-                        if ( v[i2] === '; ' ) {
-                            v[i2] = '';
-                        }
+                rows.each( function( i, v ) {
+                    let clean_row = v.outerText.split('\t');
+                    $.each( clean_row, function(i,v) {
+                        clean_row[i] = clean_row[i].slice(0, clean_row[i].length - 1); //remove trailing comma
+                        v = v.replace( /^\n/g, '' );
+                        v = v.replace( /\n$/g, '' );
+                        v = v.replace( /\n/g, ', ' );
+                        clean_row[i] = v;
+                    })
+                    clean_row.shift(); //removes first element which is a number
+                    $.each( clean_row, function(i,v) {
+                        clean_row[i] = v.replace( /\s+$/g, '' ); //remove trailing space
                     });
-
-                    window.csv_export[i] = v;
+                    window.csv_export[i] = clean_row;
                 });
+
 
                 window.csv_export.unshift(columns);
 
@@ -382,6 +379,7 @@ function dt_list_exports_filters( $post_type ) {
                     });
 
                     $('#export-content').append(`</div>
+                                <div style="margin-top:20px;">You can select which fields are exported by changing the list fields</div>
                                 <hr>
                                 <div class="cell"><button class="button" type="button" id="download_csv_file">Download CSV File</button></div>
                                 <div class="cell">
@@ -419,10 +417,11 @@ function dt_list_exports_filters( $post_type ) {
                         line += '"' + array[i][index] + '",';
                     }
 
-                    line.slice(0,line.Length-1);
+                    line.slice(0,line.length-1);
 
                     str += line + '\r\n';
                 }
+                    console.log(str)
 
                 let export_link = document.createElement('a');
                 
