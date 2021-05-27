@@ -417,13 +417,14 @@ function dt_list_exports_filters( $post_type ) {
                         line += '"' + array[i][index] + '",';
                     }
 
-                    line.slice(0,line.length-1);
+                    //remove last comma
+                    line = line.slice(0,line.length-1);
 
                     str += line + '\r\n';
                 }
 
                 let export_link = document.createElement('a');
-                
+
                 let d = new Date();
 
                 let month = d.getMonth() + 1;
