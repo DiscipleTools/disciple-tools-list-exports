@@ -2,8 +2,7 @@
 
 add_action( 'dt_post_list_filters_sidebar', 'dt_list_exports_filters', 10, 1 );
 function dt_list_exports_filters( $post_type ) {
-    if ( 'contacts' === $post_type ) :
-        ?>
+    ?>
     <br>
     <div class="bordered-box collapsed">
         <div class="section-header"><?php esc_html_e( 'List Exports', 'disciple-tools-list-exports' )?>&nbsp;
@@ -18,9 +17,13 @@ function dt_list_exports_filters( $post_type ) {
             </button>
         </div>
         <div class="section-body" style="padding-top:1em;">
+            <a id="csv-list"><?php esc_html_e( "csv list", 'disciple-tools-list-exports' ) ?></a><br>
+            <?php
+            if ( $post_type === 'contacts' ):
+                ?>
             <a id="bcc-email-list"><?php esc_html_e( "bcc email list", 'disciple-tools-list-exports' ) ?></a><br>
             <a id="phone-list"><?php esc_html_e( "phone number list", 'disciple-tools-list-exports' ) ?></a><br>
-            <a id="csv-list"><?php esc_html_e( "csv list", 'disciple-tools-list-exports' ) ?></a><br>
+            <?php endif; ?>
             <?php if ( class_exists( 'DT_Mapbox_API' ) && DT_Mapbox_API::get_key() ) : ?>
                 <a id="map-list"><?php esc_html_e( "map list", 'disciple-tools-list-exports' ) ?></a><br>
             <?php endif; ?>
@@ -340,37 +343,44 @@ function dt_list_exports_filters( $post_type ) {
             });
 
             function csv_export() {
-                let rows = $('.dnd-moved');
-                let columns = rows[0].outerText.split('\t');
+                let columns = $('#records-table tr')[0].innerText.split('\t');
                     columns = columns.splice( 1, columns.length);
+
+                let rows = $('#table-content > tr');
 
                 window.csv_export = [];
 
-                $.each( rows.splice( 1, rows.length) , function( i, v ) {
-                    window.csv_export[i] = {};
-
-                    // Remove new line characters and convert to array
-                    v = v.outerText.replace( /\n/g, ';').split( '\t' );
-
-                    // Drop first element of array, which is empty
-                    v = v.splice( 1, v.length );
-
-                    // Remove first and last character from each string, which is always a comma
-                    // and clean up string
-                    $.each( v, function( i2, v2 ) {
-                        v[i2] = v2.substring( 1, v2.length-1 ).replace( /;/g, '; ').replace( /\s{2}/g, ' ');
-                        if ( v[i2] === '; ' ) {
-                            v[i2] = '';
-                        }
+                rows.each( function( i, v ) {
+                    let clean_row = v.outerText.split('\t');
+                    $.each( clean_row, function(i,v) {
+                        clean_row[i] = clean_row[i].slice(0, clean_row[i].length - 1); //remove trailing comma
+                        v = v.replace( /^\n/g, '' );
+                        v = v.replace( /\n$/g, '' );
+                        v = v.replace( /\n/g, '; ' );
+                        clean_row[i] = v;
+                    })
+                    clean_row.shift(); //removes first element which is a number
+                    $.each( clean_row, function(i,v) {
+                        clean_row[i] = v.replace( /^\s+/g, '').replace( /\s+$/g, '' ); //trim cell contents
                     });
-
-                    window.csv_export[i] = v;
+                    window.csv_export[i] = clean_row;
                 });
+
 
                 window.csv_export.unshift(columns);
 
                     $('#export-content').append(`
                         <div class="grid-x">
+                                <div class="cell" style="margin-bottom:15px;">The following fields will be exported:</div>
+                                <div class="cell">`);
+
+                    columns.forEach( function( i ) {
+                        $('#export-content').append(`<code>` + i + `</code> `);
+                    });
+
+                    $('#export-content').append(`</div>
+                                <div style="margin-top:20px;">You can select which fields are exported by changing the list fields</div>
+                                <hr>
                                 <div class="cell"><button class="button" type="button" id="download_csv_file">Download CSV File</button></div>
                                 <div class="cell">
                                    <a onclick="jQuery('#csv-output').toggle()">show list</a><br><br>
@@ -407,13 +417,14 @@ function dt_list_exports_filters( $post_type ) {
                         line += '"' + array[i][index] + '",';
                     }
 
-                    line.slice(0,line.Length-1);
+                    //remove last comma
+                    line = line.slice(0,line.length-1);
 
                     str += line + '\r\n';
                 }
 
                 let export_link = document.createElement('a');
-                
+
                 let d = new Date();
 
                 let month = d.getMonth() + 1;
@@ -662,5 +673,4 @@ function dt_list_exports_filters( $post_type ) {
         })
     </script>
         <?php
-    endif;
 }
