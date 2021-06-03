@@ -397,7 +397,7 @@ function dt_list_exports_filters( $post_type ) {
 
                                 if ( field_type == 'multi_select' ) {
                                     cell_value_array = [];
-                                    $.each(records[i][col_value], function(cell_index, cell_value){
+                                    $.each(records[i][col_value], function(cell_index, cell_value) {
                                         cell_value_array.push(window.post_type_fields[col_value]['default'][cell_value]['label']);
                                     });
                                     cell_value = cell_value_array.join(';');
@@ -407,6 +407,14 @@ function dt_list_exports_filters( $post_type ) {
                                     cell_value_array = [];
                                     $.each( records[i][col_value], function( cell_index, cell_value ) {
                                         cell_value_array.push( records[i][col_value][cell_index]['post_title']);
+                                    });
+                                    cell_value = cell_value_array.join(';');
+                                }
+
+                                if ( field_type == 'tags' ) {
+                                    cell_value_array = [];
+                                    $.each( records[i][col_value], function( cell_index, cell_value) {
+                                        cell_value_array.push( cell_value );
                                     });
                                     cell_value = cell_value_array.join(';');
                                 }
