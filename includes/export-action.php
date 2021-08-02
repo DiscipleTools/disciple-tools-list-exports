@@ -343,39 +343,139 @@ function dt_list_exports_filters( $post_type ) {
             });
 
             function csv_export() {
-                let columns = $('#records-table tr')[0].innerText.split('\t');
-                    columns = columns.splice( 1, columns.length);
-
-                let rows = $('#table-content > tr');
-
                 window.csv_export = [];
+                
+                // Get all columns
+                let columns = window.SHAREDFUNCTIONS.get_json_cookie( 'fields_to_show_in_table', [] );
 
-                rows.each( function( i, v ) {
-                    let clean_row = v.outerText.split('\t');
-                    $.each( clean_row, function(i,v) {
-                        clean_row[i] = clean_row[i].slice(0, clean_row[i].length - 1); //remove trailing comma
-                        v = v.replace( /^\n/g, '' );
-                        v = v.replace( /\n$/g, '' );
-                        v = v.replace( /\n/g, '; ' );
-                        clean_row[i] = v;
-                    })
-                    clean_row.shift(); //removes first element which is a number
-                    $.each( clean_row, function(i,v) {
-                        clean_row[i] = v.replace( /^\s+/g, '').replace( /\s+$/g, '' ); //trim cell contents
+                if ( columns.length === 0 ) {
+                    // Find column names with show_in_table value and add them to the columns array
+                    let all_columns = window.list_settings['post_type_settings']['fields'];
+                    $.each( all_columns, function(i,v) {
+                        if ( window.list_settings['post_type_settings']['fields'][i]['show_in_table'] ) {
+                            columns.push(i);
+                        }
+                    } );
+                }
+
+                let full_columns = [];
+
+
+                // Get all field settings for each column
+                $.each( columns, function(i,v) {
+                    full_columns[i] = window.list_settings['post_type_settings']['fields'][v];
+                })
+
+
+                // Get record list information from table rows
+                let records = window.records_list['posts'];
+                let clean_row = [];
+
+                for (i=0;i<records.length;i++) {
+                    clean_row[i] = [];
+                    $.each( columns, function( col_index, col_value ) {
+                        let cell_value = '';
+                        let field_type = window.post_type_fields[col_value]['type'];
+                        
+                        if ( col_value ) {
+                            
+                            // Check what type of field it is and select the label accordingly
+                            if ( records[i][col_value] ) {
+
+                                if ( field_type == 'boolean' ) {
+                                    cell_value = window.lodash.escape(records[i][col_value]);
+                                }
+
+                                if ( field_type == 'user_select' ) {
+                                    cell_value = window.lodash.escape(records[i][col_value]['display']);
+                                }
+
+                                if ( field_type == 'key_select' ) {
+                                    cell_value = window.lodash.escape( records[i][col_value]['label'] );
+                                }
+
+                                if ( ['text', 'number'].includes( field_type ) ) {
+                                        cell_value = window.lodash.escape( records[i][col_value] );
+                                    }
+                                }
+
+                                if ( field_type == 'textarea' ) {
+                                    cell_value = window.lodash.escape( records[i][col_value]['name'] );
+                                }
+
+                                if ( field_type == 'date' ) {
+                                    cell_value = window.lodash.escape(records[i][col_value]['formatted']);
+                                }
+
+                                if ( field_type == 'multi_select' ) {
+                                    cell_value_array = [];
+                                    $.each(records[i][col_value], function(cell_index, cell_value) {
+                                        cell_value_array.push( window.lodash.escape( window.post_type_fields[col_value]['default'][cell_value]['label'] ) );
+                                    });
+                                    cell_value = cell_value_array.join(';');
+                                }
+
+                                if ( field_type == 'connection' ) {
+                                    cell_value_array = [];
+                                    $.each( records[i][col_value], function( cell_index, cell_value ) {
+                                        cell_value_array.push( window.lodash.escape( records[i][col_value][cell_index]['post_title'] ) );
+                                    });
+                                    cell_value = cell_value_array.join(';');
+                                }
+
+                                if ( field_type == 'communication_channel') {
+                                    cell_value_array = [];
+                                    $.each( records[i][col_value], function( cell_index, cell_value ) {
+                                        cell_value_array.push( window.lodash.escape( cell_value['value'] ) );
+                                    });
+                                    cell_value = cell_value_array.join(';');
+                                }
+
+                                if ( field_type == 'location_meta' ) {
+                                    cell_value_array = [];
+                                    if ( records[i]['location_grid'] ) {
+                                        $.each( records[i]['location_grid'], function( cell_index, cell_value) {
+                                            cell_value_array.push( window.lodash.escape( records[i]['location_grid'][cell_index]['label'] ) );
+                                        });
+                                    }
+                                    cell_value = cell_value_array.join(';');
+                                }
+
+                                if ( field_type == 'tags' ) {
+                                    cell_value_array = [];
+                                    $.each( records[i][col_value], function( cell_index, cell_value) {
+                                        cell_value_array.push( window.lodash.escape( cell_value ) );
+                                    });
+                                    cell_value = cell_value_array.join(';');
+                                }
+
+                                clean_row[i][col_value] = cell_value;
+
+                            } else {
+                                //If the row's cell doesn't have anything for that column
+                                clean_row[i][col_value] = '';
+                            }
                     });
-                    window.csv_export[i] = clean_row;
-                });
+                    window.csv_export.push(clean_row[i]);
+                }
 
-
-                window.csv_export.unshift(columns);
+                let header_row = [];
+                
+                // Create a multidimensional array for the header row
+                $.each( full_columns, function(i) {
+                    header_row['column_' + i] = full_columns[i]['name'];
+                })                
+                
+                // Add column names
+                window.csv_export.unshift(header_row);
 
                     $('#export-content').append(`
                         <div class="grid-x">
                                 <div class="cell" style="margin-bottom:15px;">The following fields will be exported:</div>
                                 <div class="cell">`);
 
-                    columns.forEach( function( i ) {
-                        $('#export-content').append(`<code>` + i + `</code> `);
+                    full_columns.forEach( function( i ) {
+                        $('#export-content').append(`<code>` + i['name'] + `</code> `);
                     });
 
                     $('#export-content').append(`</div>
@@ -391,12 +491,20 @@ function dt_list_exports_filters( $post_type ) {
                         `);
 
                     let csv_output = $('#csv-output');
-                    $.each( window.csv_export, function( i, v ) {
-                        csv_output.append( document.createTextNode( $.map( v, function(e) {
-                            return '"' + e + '"';
-                        }).join(',') ) );
-                        csv_output.append(`<br>`);
-                    })
+
+                    // Add to chart
+                    let csv_output_text = ``;
+                    window.csv_export.forEach( row_value =>{
+                      csv_output_text += Object.keys(row_value).map( key=>{
+                        return '"' + row_value[key] + '"';
+                      }).join(',')
+                      csv_output_text += '<br>';
+                    });
+                    csv_output.append( csv_output_text );
+
+
+
+
 
                     $('#download_csv_file').on('click', function(){
                         DownloadJSON2CSV(window.csv_export);
@@ -417,7 +525,6 @@ function dt_list_exports_filters( $post_type ) {
                         line += '"' + array[i][index] + '",';
                     }
 
-                    //remove last comma
                     line = line.slice(0,line.length-1);
 
                     str += line + '\r\n';
