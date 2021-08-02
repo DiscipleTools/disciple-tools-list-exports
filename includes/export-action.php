@@ -349,8 +349,6 @@ function dt_list_exports_filters( $post_type ) {
                 let columns = window.SHAREDFUNCTIONS.get_json_cookie( 'fields_to_show_in_table', [] );
 
                 if ( columns.length === 0 ) {
-                    window.list_settings['post_type_settings']['fields']
-
                     // Find column names with show_in_table value and add them to the columns array
                     let all_columns = window.list_settings['post_type_settings']['fields'];
                     $.each( all_columns, function(i,v) {
