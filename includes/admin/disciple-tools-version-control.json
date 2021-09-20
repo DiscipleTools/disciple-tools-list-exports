@@ -1,9 +1,9 @@
 {
-  "name": "Disciple Tools - List Export",
+  "name": "Disciple.Tools - List Export",
   "version": "0.1.0",
   "download_url": "https://github.com/DiscipleTools/disciple-tools-list-export/releases/download/0.1.0/disciple-tools-dt-list-export.zip",
   "sections": {
-    "description": "Disciple Tools - List Export.",
+    "description": "Disciple.Tools - List Export.",
     "installation": "(Required) You must have Disciple.Tools Theme installed before using this plugin. Once Disciple.Tools is installed, you can use the normal Plugin system to install the plugin.",
     "changelog": ""
   },
@@ -15,7 +15,7 @@
     "low": "https://raw.githubusercontent.com/DiscipleTools/disciple-tools-version-control/master/images/dt-placeholder-772x250.jpg",
     "high": "https://raw.githubusercontent.com/DiscipleTools/disciple-tools-version-control/master/images/dt-placeholder-1544x500.jpg"
   },
-  "author": "Disciple Tools",
+  "author": "Disciple.Tools",
   "author_homepage": "https://disciple.tools",
   "homepage": "https://github.com/DiscipleTools/disciple-tools-list-export",
   "issues_url": "https://github.com/DiscipleTools/disciple-tools-list-export/issues",
