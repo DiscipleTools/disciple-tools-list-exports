@@ -2,7 +2,7 @@
 /**
  *Plugin Name: Disciple.Tools - List Exports
  * Plugin URI: https://github.com/DiscipleTools/disciple-tools-list-exports
- * Description: Disciple Tools - List Export adds export list panel to contacts list page. (BCC Email, Phone, CSV, Map)
+ * Description: Disciple.Tools - List Export adds export list panel to contacts list page. (BCC Email, Phone, CSV, Map)
  * Version:  1.7
  * Author URI: https://github.com/DiscipleTools
  * GitHub Plugin URI: https://gihub.com/DiscipleTools/disciple-tools-list-exports
@@ -206,7 +206,7 @@ class DT_List_Exports {
     public static function activation() {
 
         // Confirm 'Administrator' has 'manage_dt' privilege. This is key in 'remote' configuration when
-        // Disciple Tools theme is not installed, otherwise this will already have been installed by the Disciple Tools Theme
+        // Disciple.Tools theme is not installed, otherwise this will already have been installed by the Disciple.Tools Theme
         $role = get_role( 'administrator' );
         if ( !empty( $role ) ) {
             $role->add_cap( 'manage_dt' ); // gives access to dt plugin options
@@ -294,9 +294,9 @@ function dt_list_exports_hook_admin_notice() {
     global $dt_list_exports_required_dt_theme_version;
     $wp_theme = wp_get_theme();
     $current_version = $wp_theme->version;
-    $message = __( "'Disciple Tools - List Export' plugin requires 'Disciple Tools' theme to work. Please activate 'Disciple Tools' theme or make sure it is latest version.", "dt_list_exports" );
+    $message = __( "'Disciple.Tools - List Export' plugin requires 'Disciple.Tools' theme to work. Please activate 'Disciple.Tools' theme or make sure it is latest version.", "dt_list_exports" );
     if ( $wp_theme->get_template() === "disciple-tools-theme" ){
-        $message .= ' ' . sprintf( esc_html__( 'Current Disciple Tools version: %1$s, required version: %2$s', 'dt_list_exports' ), esc_html( $current_version ), esc_html( $dt_list_exports_required_dt_theme_version ) );
+        $message .= ' ' . sprintf( esc_html__( 'Current Disciple.Tools version: %1$s, required version: %2$s', 'dt_list_exports' ), esc_html( $current_version ), esc_html( $dt_list_exports_required_dt_theme_version ) );
     }
     // Check if it's been dismissed...
     if ( ! get_option( 'dismissed-dt-list-export', false ) ) { ?>

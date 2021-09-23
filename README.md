@@ -1,7 +1,7 @@
 [![Build Status](https://api.travis-ci.com/DiscipleTools/disciple-tools-list-exports.svg?branch=master)](https://travis-ci.com/DiscipleTools/disciple-tools-list-export)
 
 ![List Exports](https://raw.githubusercontent.com/DiscipleTools/disciple-tools-list-exports/master/documentation/list-exports-banner.png)
-# Disciple Tools - List Exports
+# Disciple.Tools - List Exports
 
 Add the ability to export csv, bcc, phone lists, and mapping from your custom contacts list.
 
@@ -15,7 +15,7 @@ Add the ability to export csv, bcc, phone lists, and mapping from your custom co
  available for quickly creating a new email in your email client, and write your message.)
  - __This plugin helps you build a phone number list from a custom contact list.__ (For example: You want to build a
   group Whatsapp message. You could build the custom list of key people through the filter creator on the contact lists
-  page of Disciple Tools, click the "phone list" link, and copy the list of the phone numbers and paste them into the
+  page of Disciple.Tools, click the "phone list" link, and copy the list of the phone numbers and paste them into the
   Whatsapp new message field.)
   - __This plugin helps you build a simple csv formatted list from a custom contact list.__ (For example: If you need to
   do a simple transfer/import of contacts to Mailchimp. You could build your list with the filter tool, and then click
@@ -31,12 +31,12 @@ information in a way that can be copied and taken to other applications.
 
 ## Installing
 
-Install as a standard plugin in the WP Admin area of the Disciple Tools system. Requires the role of Administrator.
+Install as a standard plugin in the WP Admin area of the Disciple.Tools system. Requires the role of Administrator.
 
 ## Requirements
 
-- __Map feature requires__ the installation of the free Mapbox key in the Disciple Tools mapping section.
-- Disciple Tools System
+- __Map feature requires__ the installation of the free Mapbox key in the Disciple.Tools mapping section.
+- Disciple.Tools System
 
 
 ## Contribution
