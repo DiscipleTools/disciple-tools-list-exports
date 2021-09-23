@@ -1,6 +1,6 @@
 [![Build Status](https://api.travis-ci.com/DiscipleTools/disciple-tools-list-exports.svg?branch=master)](https://travis-ci.com/DiscipleTools/disciple-tools-list-export)
 
-![List Exports](https://raw.githubusercontent.com/DiscipleTools/disciple-tools-list-exports/master/documentation/list-exports-banner.png)
+![Plugin Banner](https://raw.githubusercontent.com/DiscipleTools/disciple-tools-list-exports/master/documentation/list-exports-banner.png)
 # Disciple.Tools - List Exports
 
 Add the ability to export csv, bcc, phone lists, and mapping from your custom contacts list.
