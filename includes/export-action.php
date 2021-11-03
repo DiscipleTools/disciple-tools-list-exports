@@ -625,6 +625,7 @@ function dt_list_exports_filters( $post_type ) {
 
                             $('#mapped').html('(' + mapped + ')')
                             $('#unmapped').html('(' + unmapped + ')')
+                            $('.loading-spinner').removeClass('active')
 
                             let geojson = {
                                 'type': 'FeatureCollection',
