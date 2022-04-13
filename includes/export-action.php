@@ -1,10 +1,12 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+    exit; // Exit if accessed directly
+}
 
 add_action( 'dt_post_list_filters_sidebar', 'dt_list_exports_filters', 10, 1 );
 function dt_list_exports_filters( $post_type ) {
     ?>
-    <br>
-    <div class="bordered-box collapsed">
+    <div class="bordered-box collapsed hide-for-small-only" style="margin-top:1em;">
         <div class="section-header"><?php esc_html_e( 'List Exports', 'disciple-tools-list-exports' )?>&nbsp;
              <button class="float-right" data-open="export-help-text">
                 <img class="help-icon" src="<?php echo esc_html( get_template_directory_uri() . '/dt-assets/images/help.svg' ) ?>" alt="help"/>
@@ -344,7 +346,7 @@ function dt_list_exports_filters( $post_type ) {
 
             function csv_export() {
                 window.csv_export = [];
-                
+
                 // Get all columns
                 let columns = window.SHAREDFUNCTIONS.get_json_cookie( 'fields_to_show_in_table', [] );
 
@@ -376,9 +378,9 @@ function dt_list_exports_filters( $post_type ) {
                     $.each( columns, function( col_index, col_value ) {
                         let cell_value = '';
                         let field_type = window.post_type_fields[col_value]['type'];
-                        
+
                         if ( col_value ) {
-                            
+
                             // Check what type of field it is and select the label accordingly
                             if ( records[i][col_value] ) {
 
@@ -460,12 +462,12 @@ function dt_list_exports_filters( $post_type ) {
                 }
 
                 let header_row = [];
-                
+
                 // Create a multidimensional array for the header row
                 $.each( full_columns, function(i) {
                     header_row['column_' + i] = full_columns[i]['name'];
-                })                
-                
+                })
+
                 // Add column names
                 window.csv_export.unshift(header_row);
 
