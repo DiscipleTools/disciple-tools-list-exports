@@ -375,7 +375,7 @@ function dt_list_exports_filters( $post_type ) {
                 let records = window.records_list['posts'];
                 let clean_row = [];
 
-                for (i=0;i<records.length;i++) {
+                for (let i=0;i<records.length;i++) {
                     clean_row[i] = [];
                     $.each( columns, function( col_index, col_value ) {
                         let cell_value = '';
@@ -386,15 +386,15 @@ function dt_list_exports_filters( $post_type ) {
                             // Check what type of field it is and select the label accordingly
                             if ( records[i][col_value] ) {
 
-                                if ( field_type == 'boolean' ) {
+                                if ( field_type === 'boolean' ) {
                                     cell_value = window.lodash.escape(records[i][col_value]);
                                 }
 
-                                if ( field_type == 'user_select' ) {
+                                if ( field_type === 'user_select' ) {
                                     cell_value = window.lodash.escape(records[i][col_value]['display']);
                                 }
 
-                                if ( field_type == 'key_select' ) {
+                                if ( field_type === 'key_select' ) {
                                     cell_value = window.lodash.escape( records[i][col_value]['label'] );
                                 }
 
@@ -403,40 +403,40 @@ function dt_list_exports_filters( $post_type ) {
                                     }
                                 }
 
-                                if ( field_type == 'textarea' ) {
+                                if ( field_type === 'textarea' ) {
                                     cell_value = window.lodash.escape( records[i][col_value]['name'] );
                                 }
 
-                                if ( field_type == 'date' ) {
-                                    cell_value = window.lodash.escape(records[i][col_value]['formatted']);
+                                if ( field_type === 'date' ) {
+                                    cell_value = window.lodash.escape(records[i]?.[col_value]?.['formatted'] || '' );
                                 }
 
-                                if ( field_type == 'multi_select' ) {
-                                    cell_value_array = [];
+                                if ( field_type === 'multi_select' ) {
+                                    let cell_value_array = [];
                                     $.each(records[i][col_value], function(cell_index, cell_value) {
                                         cell_value_array.push( window.lodash.escape( window.post_type_fields[col_value]['default'][cell_value]['label'] ) );
                                     });
                                     cell_value = cell_value_array.join(';');
                                 }
 
-                                if ( field_type == 'connection' ) {
-                                    cell_value_array = [];
+                                if ( field_type === 'connection' ) {
+                                    let cell_value_array = [];
                                     $.each( records[i][col_value], function( cell_index, cell_value ) {
                                         cell_value_array.push( window.lodash.escape( records[i][col_value][cell_index]['post_title'] ) );
                                     });
                                     cell_value = cell_value_array.join(';');
                                 }
 
-                                if ( field_type == 'communication_channel') {
-                                    cell_value_array = [];
+                                if ( field_type === 'communication_channel') {
+                                    let cell_value_array = [];
                                     $.each( records[i][col_value], function( cell_index, cell_value ) {
                                         cell_value_array.push( window.lodash.escape( cell_value['value'] ) );
                                     });
                                     cell_value = cell_value_array.join(';');
                                 }
 
-                                if ( field_type == 'location_meta' ) {
-                                    cell_value_array = [];
+                                if ( field_type === 'location_meta' ) {
+                                    let cell_value_array = [];
                                     if ( records[i]['location_grid'] ) {
                                         $.each( records[i]['location_grid'], function( cell_index, cell_value) {
                                             cell_value_array.push( window.lodash.escape( records[i]['location_grid'][cell_index]['label'] ) );
@@ -445,8 +445,8 @@ function dt_list_exports_filters( $post_type ) {
                                     cell_value = cell_value_array.join(';');
                                 }
 
-                                if ( field_type == 'tags' ) {
-                                    cell_value_array = [];
+                                if ( field_type === 'tags' ) {
+                                    let cell_value_array = [];
                                     $.each( records[i][col_value], function( cell_index, cell_value) {
                                         cell_value_array.push( window.lodash.escape( cell_value ) );
                                     });
