@@ -380,7 +380,6 @@ function dt_list_exports_filters( $post_type ) {
                     $.each( columns, function( col_index, col_value ) {
                         let cell_value = '';
                         let field_type = window.post_type_fields[col_value]['type'];
-
                         if ( col_value ) {
 
                             // Check what type of field it is and select the label accordingly
@@ -435,11 +434,11 @@ function dt_list_exports_filters( $post_type ) {
                                     cell_value = cell_value_array.join(';');
                                 }
 
-                                if ( field_type === 'location_meta' ) {
+                                if ( (field_type === 'location_meta') || (field_type === 'location') ) {
                                     let cell_value_array = [];
                                     if ( records[i]['location_grid'] ) {
                                         $.each( records[i]['location_grid'], function( cell_index, cell_value) {
-                                            cell_value_array.push( window.lodash.escape( records[i]['location_grid'][cell_index]['label'] ) );
+                                            cell_value_array.push( window.lodash.escape( `${records[i]['location_grid'][cell_index]['id']}:${records[i]['location_grid'][cell_index]['label']}` ) );
                                         });
                                     }
                                     cell_value = cell_value_array.join(';');
@@ -499,7 +498,7 @@ function dt_list_exports_filters( $post_type ) {
                     // Add to chart
                     let csv_output_text = ``;
                     window.csv_export.forEach( row_value =>{
-                      csv_output_text += Object.keys(row_value).map( key=>{
+                        csv_output_text += Object.keys(row_value).map( key=>{
                         return '"' + row_value[key] + '"';
                       }).join(',')
                       csv_output_text += '<br>';
