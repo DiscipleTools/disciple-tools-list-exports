@@ -474,7 +474,7 @@ function dt_list_exports_filters( $post_type ) {
                     let header = full_columns[i];
 
                     if ( ( header['type'] === 'location_meta' ) || ( header['type'] === 'location' ) ) {
-                        header_row['column_' + i] = header['name'] + '[ID]';
+                        header_row['column_' + i] = header['name'] + ' [ID]';
                         header_row['column_' + i + '_0'] = header['name'];
                     } else {
                         header_row['column_' + i] = header['name'];
@@ -510,7 +510,7 @@ function dt_list_exports_filters( $post_type ) {
                     // Add to chart
                     let csv_output_text = ``;
                     window.csv_export.forEach( row_value =>{
-                        csv_output_text += Object.keys(row_value).map( key=>{
+                      csv_output_text += Object.keys(row_value).map( key=>{
                         return '"' + row_value[key] + '"';
                       }).join(',')
                       csv_output_text += '<br>';
