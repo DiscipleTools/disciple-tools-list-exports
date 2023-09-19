@@ -436,12 +436,15 @@ function dt_list_exports_filters( $post_type ) {
 
                                 if ( (field_type === 'location_meta') || (field_type === 'location') ) {
                                     let cell_value_array = [];
+                                    let cell_value_array_id = [];
                                     if ( records[i]['location_grid'] ) {
                                         $.each( records[i]['location_grid'], function( cell_index, cell_value) {
-                                            cell_value_array.push( window.lodash.escape( `${records[i]['location_grid'][cell_index]['id']}:${records[i]['location_grid'][cell_index]['label']}` ) );
+                                            cell_value_array.push( window.lodash.escape( `${records[i]['location_grid'][cell_index]['label']}` ) );
+                                            cell_value_array_id.push( window.lodash.escape( `${records[i]['location_grid'][cell_index]['id']}` ) );
                                         });
                                     }
-                                    cell_value = cell_value_array.join(';');
+                                    clean_row[i]['location_grid'] = cell_value_array_id.join(';');
+                                    clean_row[i]['location'] = cell_value_array.join(';');
                                 }
 
                                 if ( field_type === 'tags' ) {
@@ -452,7 +455,9 @@ function dt_list_exports_filters( $post_type ) {
                                     cell_value = cell_value_array.join(';');
                                 }
 
-                                clean_row[i][col_value] = cell_value;
+                                if ( !( (field_type === 'location_meta') || (field_type === 'location') ) ) {
+                                    clean_row[i][col_value] = cell_value;
+                                }
 
                             } else {
                                 //If the row's cell doesn't have anything for that column
@@ -466,7 +471,14 @@ function dt_list_exports_filters( $post_type ) {
 
                 // Create a multidimensional array for the header row
                 $.each( full_columns, function(i) {
-                    header_row['column_' + i] = full_columns[i]['name'];
+                    let header = full_columns[i];
+
+                    if ( ( header['type'] === 'location_meta' ) || ( header['type'] === 'location' ) ) {
+                        header_row['column_' + i] = header['name'] + '[ID]';
+                        header_row['column_' + i + '_0'] = header['name'];
+                    } else {
+                        header_row['column_' + i] = header['name'];
+                    }
                 })
 
                 // Add column names
