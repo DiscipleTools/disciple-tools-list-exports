@@ -3,7 +3,7 @@
  *Plugin Name: Disciple.Tools - List Exports
  * Plugin URI: https://github.com/DiscipleTools/disciple-tools-list-exports
  * Description: Disciple.Tools - List Export adds export list panel to contacts list page. (BCC Email, Phone, CSV, Map)
- * Version:  1.9.1
+ * Version:  1.9.2
  * Author URI: https://github.com/DiscipleTools
  * GitHub Plugin URI: https://gihub.com/DiscipleTools/disciple-tools-list-exports
  * Requires at least: 4.7.0
