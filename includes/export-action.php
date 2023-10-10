@@ -736,8 +736,7 @@ function dt_list_exports_filters( $post_type ) {
 
                 let items = []
                 let getContactsPromise = null
-                let filter = window.SHAREDFUNCTIONS.get_json_cookie("last_view")
-
+                let filter = window.SHAREDFUNCTIONS.get_json_from_local_storage(`${window.wpApiShare.post_type}_last_view`);
                 let data = filter.query || {}
 
                 let fields = [];
