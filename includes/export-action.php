@@ -111,6 +111,12 @@ function dt_list_exports_filters( $post_type ) {
                     }
                 });
             })
+
+            function validate_email_address(email) {
+                const regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+                return regex.test(email);
+            }
+
             function generate_email_totals(){
 
                 let bcc_email_content = jQuery('#export-content')
@@ -155,11 +161,16 @@ function dt_list_exports_filters( $post_type ) {
                             email_totals[group] = []
                         }
                         let non_empty_values = v.contact_email.filter(val=>val.value)
-                        non_empty_values.forEach(vv=>{
-                            email_totals[group].push(window.lodash.escape(vv.value))
-                            count++
-                            list_count['full']++
-                            has_email = true;
+                        non_empty_values.forEach(vv => {
+                            let email = window.lodash.escape(vv.value);
+                            if (validate_email_address(email)) {
+                                email_totals[group].push(email)
+                                count++
+                                list_count['full']++
+                                has_email = true;
+                            } else {
+                                console.log(`Invalid Email Format: ${email}`);
+                            }
                         })
                         if (count > 50) {
                             group++
