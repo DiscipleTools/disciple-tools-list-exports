@@ -207,8 +207,9 @@ function dt_list_exports_filters( $post_type ) {
                             email_links[group] = []
                         }
                         $.each(v.contact_email, function (ii, vv) {
-                            if ( vv.value ){
-                                email_links[group].push( vv.value )
+                            let email = window.lodash.escape(vv.value);
+                            if ( validate_email_address(email) ){
+                                email_links[group].push( email )
                             }
                         })
                         if (email_links[group].length > 50) {
