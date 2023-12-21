@@ -3,37 +3,39 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
 
-add_action( 'dt_post_list_filters_sidebar', 'dt_list_exports_filters', 10, 1 );
+add_filter( 'dt_post_list_exports_filters_sidebar_help_text', 'dt_list_exports_filters_help_text', 10, 1 );
+function dt_list_exports_filters_help_text( $help = [] ) {
+
+    $help[] = [
+        'title' => _x( 'BCC Email List', 'disciple-tools-list-exports' ),
+        'text' => _x( 'Using the current filter, the available emails are grouped by 50 and can be launched into your default email client by group. Many email providers put a limit of 50 on BCC emails. You can open all groups at once using the "Open All" button. If the list is too large, this might alert your email provider. The BCC email tool is meant to assist small group emails. Bulk email should be handled through bulk email providers.', 'disciple-tools-list-exports' )
+    ];
+
+    $help[] = [
+        'title' => _x( 'Phone Number List', 'disciple-tools-list-exports' ),
+        'text' => _x( 'Using the current filter, this is intended for copy pasting a list of numbers into a messaging app, WhatsApp, Signal, etc. This is a quick way of starting a group conversation.', 'disciple-tools-list-exports' )
+    ];
+
+    $help[] = [
+        'title' => _x( 'Map List', 'disciple-tools-list-exports' ),
+        'text' => _x( 'Using the current filter, this creates a basic points map of known locations of listed individuals.', 'disciple-tools-list-exports' )
+    ];
+
+    return $help;
+}
+
+add_action( 'dt_post_list_exports_filters_sidebar', 'dt_list_exports_filters', 10, 1 );
 function dt_list_exports_filters( $post_type ) {
+    if ( $post_type === 'contacts' ): ?>
+        <a id="bcc-email-list"><?php esc_html_e( 'bcc email list', 'disciple-tools-list-exports' ) ?></a><br>
+        <a id="phone-list"><?php esc_html_e( 'phone number list', 'disciple-tools-list-exports' ) ?></a><br>
+    <?php endif; ?>
+    <?php if ( class_exists( 'DT_Mapbox_API' ) && DT_Mapbox_API::get_key() ) : ?>
+        <a id="map-list"><?php esc_html_e( 'map list', 'disciple-tools-list-exports' ) ?></a><br>
+    <?php endif;
+    do_action( 'dt_list_exports_menu_items', $post_type );
     ?>
-    <div class="bordered-box collapsed hide-for-small-only" style="margin-top:1em;">
-        <div class="section-header"><?php esc_html_e( 'List Exports', 'disciple-tools-list-exports' )?>&nbsp;
-             <button class="float-right" data-open="export-help-text">
-                <img class="help-icon" src="<?php echo esc_html( get_template_directory_uri() . '/dt-assets/images/help.svg' ) ?>" alt="help"/>
-            </button>
-            <button class="section-chevron chevron_down">
-                <img src="<?php echo esc_html( get_template_directory_uri() . '/dt-assets/images/chevron_down.svg' ) ?>" alt="expand"/>
-            </button>
-            <button class="section-chevron chevron_up">
-                <img src="<?php echo esc_html( get_template_directory_uri() . '/dt-assets/images/chevron_up.svg' ) ?>" alt="collapse"/>
-            </button>
-        </div>
-        <div class="section-body" style="padding-top:1em;">
-            <a id="csv-list"><?php esc_html_e( 'csv list', 'disciple-tools-list-exports' ) ?></a><br>
-            <?php if ( $post_type === 'contacts' ): ?>
-                <a id="bcc-email-list"><?php esc_html_e( 'bcc email list', 'disciple-tools-list-exports' ) ?></a><br>
-                <a id="phone-list"><?php esc_html_e( 'phone number list', 'disciple-tools-list-exports' ) ?></a><br>
-            <?php endif; ?>
-            <?php if ( class_exists( 'DT_Mapbox_API' ) && DT_Mapbox_API::get_key() ) : ?>
-                <a id="map-list"><?php esc_html_e( 'map list', 'disciple-tools-list-exports' ) ?></a><br>
-            <?php endif;
 
-            do_action( 'dt_list_exports_menu_items', $post_type );
-
-            ?>
-        </div>
-
-    </div>
     <div id="export-reveal" class="large reveal" data-reveal data-v-offset="10px">
         <span class="section-header" id="export-title"></span> <span id="reveal-loading-spinner" style="display: inline-block" class="loading-spinner active"></span>
         <hr>
@@ -49,32 +51,6 @@ function dt_list_exports_filters( $post_type ) {
             <div id="dynamic-styles"></div>
             <div id="map-wrapper">
                 <div id='map'></div>
-            </div>
-        </div>
-        <button class="close-button" data-close aria-label="Close modal" type="button">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div id="export-help-text" class="large reveal" data-reveal data-v-offset="10px">
-        <span class="section-header"><?php esc_html_e( 'List Export Help', 'disciple-tools-list-exports' ) ?></span>
-        <hr>
-        <div class="grid-x">
-            <div class="cell">
-                <p><strong>BCC Email List</strong></p>
-                <p>Using the current filter, the available emails are grouped by 50 and can be launched into your default email client by group. Many email providers put a limit of 50 on BCC emails. You can open all groups at once using the "Open All" button. If the list is too large, this might alert your email provider. </p>
-                <p>The BCC email tool is meant to assist small group emails. Bulk email should be handled through bulk email providers.</p>
-            </div>
-            <div class="cell">
-                <p><strong>Phone Number List</strong></p>
-                <p>Using the current filter, this is intended for copy pasting a list of numbers into a messaging app, WhatsApp, Signal, etc. This is a quick way of starting a group conversation.</p>
-            </div>
-            <div class="cell">
-                <p><strong>CSV List</strong></p>
-                <p>Using the current filter, this is a simple way to export basic information and use it in other applications.</p>
-            </div>
-            <div class="cell">
-                <p><strong>Map List</strong></p>
-                <p>Using the current filter, this creates a basic points map of known locations of listed individuals.</p>
             </div>
         </div>
         <button class="close-button" data-close aria-label="Close modal" type="button">
@@ -343,238 +319,6 @@ function dt_list_exports_filters( $post_type ) {
                 }
 
             })
-
-            /* CSV LIST CUSTOM FILTERS EXPORT ***********************/
-            let csv_list = $('#csv-list');
-            csv_list.on('click', function() {
-                if ( $('#list-loading-spinner').hasClass('active') ) {
-                    alert('Contact list is still loading, please try again in a few seconds.');
-                } else {
-                    clear_vars();
-                    show_spinner();
-                    $('#export-title').html('CSV List');
-                    $('#export-reveal').foundation('open');
-                    csv_export();
-                }
-            });
-
-            function csv_export() {
-                window.csv_export = [];
-
-                // Get all columns
-                let columns = window.SHAREDFUNCTIONS.get_json_cookie( 'fields_to_show_in_table', [] );
-
-                if ( columns.length === 0 ) {
-                    // Find column names with show_in_table value and add them to the columns array
-                    let all_columns = window.list_settings['post_type_settings']['fields'];
-                    $.each( all_columns, function(i,v) {
-                        if ( window.list_settings['post_type_settings']['fields'][i]['show_in_table'] ) {
-                            columns.push(i);
-                        }
-                    } );
-                }
-
-                let full_columns = [];
-
-
-                // Get all field settings for each column
-                $.each( columns, function(i,v) {
-                    full_columns[i] = window.list_settings['post_type_settings']['fields'][v];
-                })
-
-
-                // Get record list information from table rows
-                let records = window.records_list['posts'];
-                let clean_row = [];
-
-                for (let i=0;i<records.length;i++) {
-                    clean_row[i] = [];
-                    $.each( columns, function( col_index, col_value ) {
-                        let cell_value = '';
-                        let field_type = window.post_type_fields[col_value]['type'];
-                        if ( col_value ) {
-
-                            // Check what type of field it is and select the label accordingly
-                            if ( records[i][col_value] ) {
-
-                                if ( field_type === 'boolean' ) {
-                                    cell_value = window.lodash.escape(records[i][col_value]);
-                                }
-
-                                if ( field_type === 'user_select' ) {
-                                    cell_value = window.lodash.escape(records[i][col_value]['display']);
-                                }
-
-                                if ( field_type === 'key_select' ) {
-                                    cell_value = window.lodash.escape( records[i][col_value]['label'] );
-                                }
-
-                                if ( ['text', 'number'].includes( field_type ) ) {
-                                        cell_value = window.lodash.escape( records[i][col_value] );
-                                    }
-                                }
-
-                                if ( field_type === 'textarea' ) {
-                                    cell_value = window.lodash.escape( records[i][col_value]['name'] );
-                                }
-
-                                if ( field_type === 'date' ) {
-                                    cell_value = window.lodash.escape(records[i]?.[col_value]?.['formatted'] || '' );
-                                }
-
-                                if ( field_type === 'multi_select' ) {
-                                    let cell_value_array = [];
-                                    $.each(records[i][col_value], function(cell_index, cell_value) {
-                                        cell_value_array.push( window.lodash.escape( window.post_type_fields[col_value]['default'][cell_value]['label'] ) );
-                                    });
-                                    cell_value = cell_value_array.join(';');
-                                }
-
-                                if ( field_type === 'connection' ) {
-                                    let cell_value_array = [];
-                                    $.each( records[i][col_value], function( cell_index, cell_value ) {
-                                        cell_value_array.push( window.lodash.escape( records[i][col_value][cell_index]['post_title'] ) );
-                                    });
-                                    cell_value = cell_value_array.join(';');
-                                }
-
-                                if ( field_type === 'communication_channel') {
-                                    let cell_value_array = [];
-                                    $.each( records[i][col_value], function( cell_index, cell_value ) {
-                                        cell_value_array.push( window.lodash.escape( cell_value['value'] ) );
-                                    });
-                                    cell_value = cell_value_array.join(';');
-                                }
-
-                                if ( (field_type === 'location_meta') || (field_type === 'location') ) {
-                                    let cell_value_array = [];
-                                    let cell_value_array_id = [];
-                                    if ( records[i]['location_grid'] ) {
-                                        $.each( records[i]['location_grid'], function( cell_index, cell_value) {
-                                            cell_value_array.push( window.lodash.escape( `${records[i]['location_grid'][cell_index]['label']}` ) );
-                                            cell_value_array_id.push( window.lodash.escape( `${records[i]['location_grid'][cell_index]['id']}` ) );
-                                        });
-                                    }
-                                    clean_row[i]['location_grid'] = cell_value_array_id.join(';');
-                                    clean_row[i]['location'] = cell_value_array.join(';');
-                                }
-
-                                if ( field_type === 'tags' ) {
-                                    let cell_value_array = [];
-                                    $.each( records[i][col_value], function( cell_index, cell_value) {
-                                        cell_value_array.push( window.lodash.escape( cell_value ) );
-                                    });
-                                    cell_value = cell_value_array.join(';');
-                                }
-
-                                if ( !( (field_type === 'location_meta') || (field_type === 'location') ) ) {
-                                    clean_row[i][col_value] = cell_value;
-                                }
-
-                            } else {
-                                //If the row's cell doesn't have anything for that column
-                                clean_row[i][col_value] = '';
-                            }
-                    });
-                    window.csv_export.push(clean_row[i]);
-                }
-
-                let header_row = [];
-
-                // Create a multidimensional array for the header row
-                $.each( full_columns, function(i) {
-                    let header = full_columns[i];
-
-                    if ( ( header['type'] === 'location_meta' ) || ( header['type'] === 'location' ) ) {
-                        header_row['column_' + i] = header['name'] + ' [ID]';
-                        header_row['column_' + i + '_0'] = header['name'];
-                    } else {
-                        header_row['column_' + i] = header['name'];
-                    }
-                })
-
-                // Add column names
-                window.csv_export.unshift(header_row);
-
-                    $('#export-content').append(`
-                        <div class="grid-x">
-                                <div class="cell" style="margin-bottom:15px;">The following fields will be exported:</div>
-                                <div class="cell">`);
-
-                    full_columns.forEach( function( i ) {
-                        $('#export-content').append(`<code>` + i['name'] + `</code> `);
-                    });
-
-                    $('#export-content').append(`</div>
-                                <div style="margin-top:20px;">You can select which fields are exported by changing the list fields</div>
-                                <hr>
-                                <div class="cell"><button class="button" type="button" id="download_csv_file">Download CSV File</button></div>
-                                <div class="cell">
-                                   <a onclick="jQuery('#csv-output').toggle()">show list</a><br><br>
-                                   <code id="csv-output" style="display:none"></code>
-                                </div>
-                                <div class="cell"><br></div>
-                            </div>
-                        `);
-
-                    let csv_output = $('#csv-output');
-
-                    // Add to chart
-                    let csv_output_text = ``;
-                    window.csv_export.forEach( row_value =>{
-                      csv_output_text += Object.keys(row_value).map( key=>{
-                        return '"' + row_value[key] + '"';
-                      }).join(',')
-                      csv_output_text += '<br>';
-                    });
-                    csv_output.append( csv_output_text );
-
-
-
-
-
-                    $('#download_csv_file').on('click', function(){
-                        DownloadJSON2CSV(window.csv_export);
-                    })
-
-                hide_spinner();
-            }
-
-            function DownloadJSON2CSV( objArray ) {
-                var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
-
-                var str = '';
-
-                for (var i = 0; i < array.length; i++) {
-                    var line = '';
-
-                    for (var index in array[i]) {
-                        line += '"' + array[i][index] + '",';
-                    }
-
-                    line = line.slice(0,line.length-1);
-
-                    str += line + '\r\n';
-                }
-
-                let export_link = document.createElement('a');
-
-                let d = new Date();
-
-                let month = d.getMonth() + 1;
-                month = ( month < 10 ? '0' : '' ) + month;
-
-                let day = d.getDate();
-                day = ( day < 10 ? '0' : '' ) + day;
-
-                let date = d.getFullYear() + '_' + month + '_' + day;
-
-                let export_filename = date + '_list_export.csv';
-                export_link.download = export_filename;
-                export_link.href = "data:text/csv;charset=utf-8," + escape(str);
-                export_link.click();
-                export_link.remove();
-            }
 
             /* MAP LIST EXPORT **************************************/
             if ( window.mapbox_key ) {
