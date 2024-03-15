@@ -1,9 +1,9 @@
 <?php
 /**
- *Plugin Name: Disciple.Tools - List Exports
+ * Plugin Name: Disciple.Tools - List Exports - DELETE ME
  * Plugin URI: https://github.com/DiscipleTools/disciple-tools-list-exports
- * Description: Disciple.Tools - List Export adds export list panel to contacts list page. (BCC Email, Phone, CSV, Map)
- * Version:  1.10
+ * Description: These plugin's features have been integrated into the Disciple.Tools v1.57. This plugin now is empty and can be deleted.
+ * Version:  1.11
  * Author URI: https://github.com/DiscipleTools
  * GitHub Plugin URI: https://gihub.com/DiscipleTools/disciple-tools-list-exports
  * Requires at least: 4.7.0
@@ -66,7 +66,7 @@ function dt_list_exports() {
     return false;
 
 }
-add_action( 'after_setup_theme', 'dt_list_exports' );
+#add_action( 'after_setup_theme', 'dt_list_exports' );
 
 /**
  * Singleton class for setting up the plugin.
